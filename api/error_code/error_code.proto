@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package grpc.psychological_experiment.error_code;
+
+option go_package = "github.com/PsychologicalExperiment/backEnd/api/error_code";
+
+enum ErrorCode{
+    //成功
+    CODE_SUCC = 0;
+    //通用类错误码
+    //参数错误
+    CODE_PARAM_ERR = 10000;
+    //解码转换错误
+    CODE_DECODE_ERR = 10001;
+    //服务器内部错误
+    CODE_INTERNAL_ERR = 10002;
+    //权限不足
+    CODE_PERMISSION_DENIED_ERR = 10003;
+    //网络错误
+    CODE_NETWORK_ERR = 10004;
+    //具体业务错误码(每个服务分配一段)
+}
