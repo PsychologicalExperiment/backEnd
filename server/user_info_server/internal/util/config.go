@@ -23,12 +23,12 @@ var GConfig Config
 func InitConfig() {
 	config, err := ioutil.ReadFile("./config/config.yaml")
 	if err != nil {
-		grpclog.Errorf("read config failed, error: %+v", err)
+		grpclog.Fatalf("read config failed, error: %+v", err)
 		return
 	}
 	err = yaml.Unmarshal(config, &GConfig)
 	if err != nil {
-		grpclog.Errorf("decode yaml failed, error: %+v", err)
+		grpclog.Fatalf("decode yaml failed, error: %+v", err)
 		return
 	}
 }
