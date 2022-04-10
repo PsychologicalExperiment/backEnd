@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package grpc.psychological_experiment.experiment_server;
+
+option go_package = "github.com/PsychologicalExperiment/backEnd/api/experiment_server";
+
+import "api/api_common/api_common.proto";
+
+service ExperimentService{
+    rpc QueryExperiment (QuerySubjectRecordReq) returns (QuerySubjectRecordResp);
+}
+
+enum SubjectRecordStatus {
+    INIT = 0;
+    APPROVED = 1;
+    TIMEOUT = 2;
+    RETURNED = 3;
+}
+
+message SubjectRecord {
+    string exp_id = 1;
+    string user_id = 2;
+    string start_time = 3;
+    string time_taken = 4;
+    string completion_code = 5;
+    SubjectRecordStatus status = 6;
+}
+
+message QuerySubjectRecordReq {
+    // experiment_id
+    string exp_id = 1; 
+    // 
+    string user_id = 2;
+}
+
+message QuerySubjectRecordResp {
+    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    repeated SubjectRecord subject_record_list = 2;
+}
