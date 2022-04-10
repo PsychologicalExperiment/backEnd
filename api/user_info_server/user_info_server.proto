@@ -30,20 +30,20 @@ message UserInfo{
     string user_name = 3;
     // gender
     uint32 gender = 4;
+    //password
+    string password = 5;
 }
 
 message RegisterReq{
     //user info
     UserInfo user_info = 1;
-    //password
-    string password = 2;
 }
 
 message RegisterRsp{
     // common rsp
     grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
-    // uin
-    string uin = 2;
+    // token
+    string token = 2;
 }
 
 message LoginReq{
@@ -60,4 +60,6 @@ message LoginRsp{
     grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
     // user info
     UserInfo user_info = 2;
+    // token
+    string token = 3;
 }
