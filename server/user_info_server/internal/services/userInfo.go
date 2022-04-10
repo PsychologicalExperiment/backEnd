@@ -1,6 +1,9 @@
 package services
 
 import (
+	"fmt"
+
+	"github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/services/serverErr"
 	"github.com/go-redis/redis/v8"
 	"google.golang.org/grpc/grpclog"
 	"gorm.io/gorm"
@@ -25,19 +28,19 @@ func (u *UserInfoServerImpl) insertUserInfo(
 	res := u.sqlConn.Create(user)
 	if res.Error != nil {
 		grpclog.Errorf("insert into db failed, error: %+v, userInfo: %+v", res.Error, user)
-		return res.Error
+		return serverErr.New(serverErr.ErrMySqlError)
 	}
 	return nil
 }
 
-func (u *UserInfoServerImpl) isEmailUsed(
-	email string,
+func (u *UserInfoServerImpl) isUinqueKeyUsed(
+	uniqueKey, queryKey string,
 ) (bool, error) {
 	users := []userInfo{}
-	res := u.sqlConn.Where("email = ?", email).Find(&users)
+	res := u.sqlConn.Where(fmt.Sprintf("%s = ?", queryKey), uniqueKey).Find(&users)
 	if res.Error != nil {
 		grpclog.Errorf("read db failed, error: %+v", res.Error)
-		return false, res.Error
+		return false, serverErr.New(serverErr.ErrMySqlError)
 	}
 	return len(users) > 0, nil
 }

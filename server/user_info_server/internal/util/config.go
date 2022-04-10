@@ -12,10 +12,11 @@ type Config struct {
 }
 
 type MySqlConf struct {
-	Ip       string `yaml:"ip"`
-	Port     string `yaml:"port"`
-	User     string `yaml:"user"`
-	Password string `yaml:"password"`
+	Ip        string `yaml:"ip"`
+	Port      string `yaml:"port"`
+	User      string `yaml:"user"`
+	Password  string `yaml:"password"`
+	TableName string `yaml:"tableName"`
 }
 
 var GConfig Config
