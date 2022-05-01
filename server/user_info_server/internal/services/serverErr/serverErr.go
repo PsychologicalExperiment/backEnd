@@ -15,6 +15,12 @@ const (
 	ErrParamsTypeErrorInServer
 	ErrMySqlError
 	ErrEmailAlreadyUsed
+	ErrEmailNotProvided
+	ErrPasswordNotProvided
+	ErrGenderInvalid
+	ErrPhoneNumberAlreadyUsed
+	ErrGenerateTokenFailed
+	ErrSetRedisFailed
 )
 
 var errMsgMap = map[ErrCode]string{
@@ -22,7 +28,13 @@ var errMsgMap = map[ErrCode]string{
 	ErrUserInfoNotProvided:     "param error, user info is not provided",
 	ErrParamsTypeErrorInServer: "internal error, param wrong in server",
 	ErrMySqlError:              "internal error, db sql error, please contact us",
-	ErrEmailAlreadyUsed:        "param error, email already used",
+	ErrEmailAlreadyUsed:        "param error, email is already used",
+	ErrEmailNotProvided:        "param error, email is empty",
+	ErrPasswordNotProvided:     "param error, password is empty",
+	ErrGenderInvalid:           "param error, gender is invalid",
+	ErrPhoneNumberAlreadyUsed:  "param error, phone number is already used",
+	ErrGenerateTokenFailed:     "internal error, generate token failed",
+	ErrSetRedisFailed:          "internal error, set redis failed",
 }
 
 var errToCommonCode = map[ErrCode]ErrCode{
@@ -31,6 +43,12 @@ var errToCommonCode = map[ErrCode]ErrCode{
 	ErrParamsTypeErrorInServer: ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
 	ErrMySqlError:              ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
 	ErrEmailAlreadyUsed:        ErrCode(errCodePb.ErrorCode_CODE_PARAM_ERR),
+	ErrEmailNotProvided:        ErrCode(errCodePb.ErrorCode_CODE_PARAM_ERR),
+	ErrPasswordNotProvided:     ErrCode(errCodePb.ErrorCode_CODE_PARAM_ERR),
+	ErrGenderInvalid:           ErrCode(errCodePb.ErrorCode_CODE_PARAM_ERR),
+	ErrPhoneNumberAlreadyUsed:  ErrCode(errCodePb.ErrorCode_CODE_PARAM_ERR),
+	ErrGenerateTokenFailed:     ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
+	ErrSetRedisFailed:          ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
 }
 
 type ErrCode uint32

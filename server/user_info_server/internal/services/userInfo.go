@@ -1,12 +1,18 @@
 package services
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/services/serverErr"
 	"github.com/go-redis/redis/v8"
 	"google.golang.org/grpc/grpclog"
 	"gorm.io/gorm"
+)
+
+const (
+	searchKeyEmail       string = "email"
+	searchKeyPhoneNumber string = "phone_number"
 )
 
 type UserInfoServerImpl struct {
@@ -20,6 +26,7 @@ type userInfo struct {
 	PhoneNumber string `gorm:"type:varchar(20);unique"`
 	UserName    string `gorm:"type:varchar(10)"`
 	Gender      uint32 `gorm:"type:tinyint(3);not null"`
+	Password    string `gorm:"type:varchar(20)"`
 }
 
 func (u *UserInfoServerImpl) insertUserInfo(
@@ -43,4 +50,28 @@ func (u *UserInfoServerImpl) isUinqueKeyUsed(
 		return false, serverErr.New(serverErr.ErrMySqlError)
 	}
 	return len(users) > 0, nil
+}
+
+func (u *UserInfoServerImpl) getUserInfosByKey(
+	queryKey, queryVal string,
+) ([]userInfo, error) {
+	users := []userInfo{}
+	res := u.sqlConn.Where(fmt.Sprintf("%s = ?", queryKey), queryVal).Find(&users)
+	if res.Error != nil {
+		grpclog.Errorf("read db failed, error: %+v", res.Error)
+		return nil, serverErr.New(serverErr.ErrMySqlError)
+	}
+	return users, nil
+}
+
+func (u *UserInfoServerImpl) setTokenForUser(
+	ctx context.Context,
+	email, token string,
+) error {
+	err := u.redisCli.Set(ctx, email, token, 0).Err()
+	if err != nil {
+		grpclog.Errorf("set redis failed, error: %+v", err)
+		return serverErr.New(serverErr.ErrSetRedisFailed)
+	}
+	return nil
 }

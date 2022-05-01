@@ -8,7 +8,9 @@ import (
 )
 
 type Config struct {
-	SqlConfig MySqlConf `yaml:"MySqlConf"`
+	SqlConfig       MySqlConf `yaml:"MySqlConf"`
+	TokenSecretKey  string    `yaml:"tokenSecretKey"`
+	TokenExpireHour int       `yaml:"tokenExpireHour"`
 }
 
 type MySqlConf struct {
