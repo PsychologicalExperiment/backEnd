@@ -22,7 +22,15 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ExperimentServiceClient interface {
-	QueryExperiment(ctx context.Context, in *QuerySubjectRecordReq, opts ...grpc.CallOption) (*QuerySubjectRecordResp, error)
+	//  主试
+	NewExperiment(ctx context.Context, in *NewExperimentReq, opts ...grpc.CallOption) (*NewExperimentResp, error)
+	QueryExperiment(ctx context.Context, in *QueryExperimentReq, opts ...grpc.CallOption) (*QueryExperimentResp, error)
+	QueryExperimentList(ctx context.Context, in *QueryExperimentListReq, opts ...grpc.CallOption) (*QueryExperimentListResp, error)
+	//  被试记录
+	CreateSubjectRecord(ctx context.Context, in *CreateSubjectRecordReq, opts ...grpc.CallOption) (*CreateSubjectRecordResp, error)
+	UpdateSubjectRecord(ctx context.Context, in *UpdateSubjectRecordReq, opts ...grpc.CallOption) (*UpdateSubjectRecordResp, error)
+	QuerySubjectRecord(ctx context.Context, in *QuerySubjectRecordReq, opts ...grpc.CallOption) (*QuerySubjectRecordResp, error)
+	QuerySubjectRecordList(ctx context.Context, in *QuerySubjectRecordListReq, opts ...grpc.CallOption) (*QuerySubjectRecordListResp, error)
 }
 
 type experimentServiceClient struct {
@@ -33,9 +41,63 @@ func NewExperimentServiceClient(cc grpc.ClientConnInterface) ExperimentServiceCl
 	return &experimentServiceClient{cc}
 }
 
-func (c *experimentServiceClient) QueryExperiment(ctx context.Context, in *QuerySubjectRecordReq, opts ...grpc.CallOption) (*QuerySubjectRecordResp, error) {
-	out := new(QuerySubjectRecordResp)
+func (c *experimentServiceClient) NewExperiment(ctx context.Context, in *NewExperimentReq, opts ...grpc.CallOption) (*NewExperimentResp, error) {
+	out := new(NewExperimentResp)
+	err := c.cc.Invoke(ctx, "/grpc.psychological_experiment.experiment_server.ExperimentService/NewExperiment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *experimentServiceClient) QueryExperiment(ctx context.Context, in *QueryExperimentReq, opts ...grpc.CallOption) (*QueryExperimentResp, error) {
+	out := new(QueryExperimentResp)
 	err := c.cc.Invoke(ctx, "/grpc.psychological_experiment.experiment_server.ExperimentService/QueryExperiment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *experimentServiceClient) QueryExperimentList(ctx context.Context, in *QueryExperimentListReq, opts ...grpc.CallOption) (*QueryExperimentListResp, error) {
+	out := new(QueryExperimentListResp)
+	err := c.cc.Invoke(ctx, "/grpc.psychological_experiment.experiment_server.ExperimentService/QueryExperimentList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *experimentServiceClient) CreateSubjectRecord(ctx context.Context, in *CreateSubjectRecordReq, opts ...grpc.CallOption) (*CreateSubjectRecordResp, error) {
+	out := new(CreateSubjectRecordResp)
+	err := c.cc.Invoke(ctx, "/grpc.psychological_experiment.experiment_server.ExperimentService/CreateSubjectRecord", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *experimentServiceClient) UpdateSubjectRecord(ctx context.Context, in *UpdateSubjectRecordReq, opts ...grpc.CallOption) (*UpdateSubjectRecordResp, error) {
+	out := new(UpdateSubjectRecordResp)
+	err := c.cc.Invoke(ctx, "/grpc.psychological_experiment.experiment_server.ExperimentService/UpdateSubjectRecord", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *experimentServiceClient) QuerySubjectRecord(ctx context.Context, in *QuerySubjectRecordReq, opts ...grpc.CallOption) (*QuerySubjectRecordResp, error) {
+	out := new(QuerySubjectRecordResp)
+	err := c.cc.Invoke(ctx, "/grpc.psychological_experiment.experiment_server.ExperimentService/QuerySubjectRecord", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *experimentServiceClient) QuerySubjectRecordList(ctx context.Context, in *QuerySubjectRecordListReq, opts ...grpc.CallOption) (*QuerySubjectRecordListResp, error) {
+	out := new(QuerySubjectRecordListResp)
+	err := c.cc.Invoke(ctx, "/grpc.psychological_experiment.experiment_server.ExperimentService/QuerySubjectRecordList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +108,15 @@ func (c *experimentServiceClient) QueryExperiment(ctx context.Context, in *Query
 // All implementations must embed UnimplementedExperimentServiceServer
 // for forward compatibility
 type ExperimentServiceServer interface {
-	QueryExperiment(context.Context, *QuerySubjectRecordReq) (*QuerySubjectRecordResp, error)
+	//  主试
+	NewExperiment(context.Context, *NewExperimentReq) (*NewExperimentResp, error)
+	QueryExperiment(context.Context, *QueryExperimentReq) (*QueryExperimentResp, error)
+	QueryExperimentList(context.Context, *QueryExperimentListReq) (*QueryExperimentListResp, error)
+	//  被试记录
+	CreateSubjectRecord(context.Context, *CreateSubjectRecordReq) (*CreateSubjectRecordResp, error)
+	UpdateSubjectRecord(context.Context, *UpdateSubjectRecordReq) (*UpdateSubjectRecordResp, error)
+	QuerySubjectRecord(context.Context, *QuerySubjectRecordReq) (*QuerySubjectRecordResp, error)
+	QuerySubjectRecordList(context.Context, *QuerySubjectRecordListReq) (*QuerySubjectRecordListResp, error)
 	mustEmbedUnimplementedExperimentServiceServer()
 }
 
@@ -54,8 +124,26 @@ type ExperimentServiceServer interface {
 type UnimplementedExperimentServiceServer struct {
 }
 
-func (UnimplementedExperimentServiceServer) QueryExperiment(context.Context, *QuerySubjectRecordReq) (*QuerySubjectRecordResp, error) {
+func (UnimplementedExperimentServiceServer) NewExperiment(context.Context, *NewExperimentReq) (*NewExperimentResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NewExperiment not implemented")
+}
+func (UnimplementedExperimentServiceServer) QueryExperiment(context.Context, *QueryExperimentReq) (*QueryExperimentResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryExperiment not implemented")
+}
+func (UnimplementedExperimentServiceServer) QueryExperimentList(context.Context, *QueryExperimentListReq) (*QueryExperimentListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryExperimentList not implemented")
+}
+func (UnimplementedExperimentServiceServer) CreateSubjectRecord(context.Context, *CreateSubjectRecordReq) (*CreateSubjectRecordResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSubjectRecord not implemented")
+}
+func (UnimplementedExperimentServiceServer) UpdateSubjectRecord(context.Context, *UpdateSubjectRecordReq) (*UpdateSubjectRecordResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateSubjectRecord not implemented")
+}
+func (UnimplementedExperimentServiceServer) QuerySubjectRecord(context.Context, *QuerySubjectRecordReq) (*QuerySubjectRecordResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QuerySubjectRecord not implemented")
+}
+func (UnimplementedExperimentServiceServer) QuerySubjectRecordList(context.Context, *QuerySubjectRecordListReq) (*QuerySubjectRecordListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QuerySubjectRecordList not implemented")
 }
 func (UnimplementedExperimentServiceServer) mustEmbedUnimplementedExperimentServiceServer() {}
 
@@ -70,8 +158,26 @@ func RegisterExperimentServiceServer(s grpc.ServiceRegistrar, srv ExperimentServ
 	s.RegisterService(&ExperimentService_ServiceDesc, srv)
 }
 
+func _ExperimentService_NewExperiment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NewExperimentReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExperimentServiceServer).NewExperiment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.psychological_experiment.experiment_server.ExperimentService/NewExperiment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExperimentServiceServer).NewExperiment(ctx, req.(*NewExperimentReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ExperimentService_QueryExperiment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QuerySubjectRecordReq)
+	in := new(QueryExperimentReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -83,7 +189,97 @@ func _ExperimentService_QueryExperiment_Handler(srv interface{}, ctx context.Con
 		FullMethod: "/grpc.psychological_experiment.experiment_server.ExperimentService/QueryExperiment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ExperimentServiceServer).QueryExperiment(ctx, req.(*QuerySubjectRecordReq))
+		return srv.(ExperimentServiceServer).QueryExperiment(ctx, req.(*QueryExperimentReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExperimentService_QueryExperimentList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryExperimentListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExperimentServiceServer).QueryExperimentList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.psychological_experiment.experiment_server.ExperimentService/QueryExperimentList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExperimentServiceServer).QueryExperimentList(ctx, req.(*QueryExperimentListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExperimentService_CreateSubjectRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateSubjectRecordReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExperimentServiceServer).CreateSubjectRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.psychological_experiment.experiment_server.ExperimentService/CreateSubjectRecord",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExperimentServiceServer).CreateSubjectRecord(ctx, req.(*CreateSubjectRecordReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExperimentService_UpdateSubjectRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateSubjectRecordReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExperimentServiceServer).UpdateSubjectRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.psychological_experiment.experiment_server.ExperimentService/UpdateSubjectRecord",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExperimentServiceServer).UpdateSubjectRecord(ctx, req.(*UpdateSubjectRecordReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExperimentService_QuerySubjectRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySubjectRecordReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExperimentServiceServer).QuerySubjectRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.psychological_experiment.experiment_server.ExperimentService/QuerySubjectRecord",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExperimentServiceServer).QuerySubjectRecord(ctx, req.(*QuerySubjectRecordReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExperimentService_QuerySubjectRecordList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySubjectRecordListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExperimentServiceServer).QuerySubjectRecordList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.psychological_experiment.experiment_server.ExperimentService/QuerySubjectRecordList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExperimentServiceServer).QuerySubjectRecordList(ctx, req.(*QuerySubjectRecordListReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -96,8 +292,32 @@ var ExperimentService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ExperimentServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "NewExperiment",
+			Handler:    _ExperimentService_NewExperiment_Handler,
+		},
+		{
 			MethodName: "QueryExperiment",
 			Handler:    _ExperimentService_QueryExperiment_Handler,
+		},
+		{
+			MethodName: "QueryExperimentList",
+			Handler:    _ExperimentService_QueryExperimentList_Handler,
+		},
+		{
+			MethodName: "CreateSubjectRecord",
+			Handler:    _ExperimentService_CreateSubjectRecord_Handler,
+		},
+		{
+			MethodName: "UpdateSubjectRecord",
+			Handler:    _ExperimentService_UpdateSubjectRecord_Handler,
+		},
+		{
+			MethodName: "QuerySubjectRecord",
+			Handler:    _ExperimentService_QuerySubjectRecord_Handler,
+		},
+		{
+			MethodName: "QuerySubjectRecordList",
+			Handler:    _ExperimentService_QuerySubjectRecordList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
