@@ -38,6 +38,7 @@ func (u *UserInfoServerImpl) Register(
 		UserName:    req.UserInfo.UserName,
 		Gender:      req.UserInfo.Gender,
 		Password:    req.UserInfo.Password,
+		UserType:    req.UserInfo.UserType,
 	})
 	if err != nil {
 		grpclog.Errorf("inser user info failed, req: %+v", req)

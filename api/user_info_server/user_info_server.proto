@@ -13,6 +13,13 @@ service UserService{
     rpc Login (LoginReq) returns (LoginRsp) {}
 }
 
+enum UserType{
+    // 主试类型
+    USER_TYPE_RESEARCHER = 0;
+    // 被试类型
+    USER_TYPE_PARTICIPANT = 1;
+}
+
 enum GenderType{
     GENDER_TYPE_INVALID = 0;
     // man
@@ -29,7 +36,11 @@ message UserInfo{
     //user name
     string user_name = 3;
     // gender
-    uint32 gender = 4;
+    GenderType gender = 4;
+    // user type
+    UserType user_type = 5;
+    // custom user form
+    string extra = 6;
 }
 
 message RegisterReq{
