@@ -8,14 +8,17 @@ import (
 )
 
 type Config struct {
-	SqlConfig MySqlConf `yaml:"MySqlConf"`
+	SqlConfig       MySqlConf `yaml:"MySqlConf"`
+	TokenSecretKey  string    `yaml:"tokenSecretKey"`
+	TokenExpireHour int       `yaml:"tokenExpireHour"`
 }
 
 type MySqlConf struct {
-	Ip       string `yaml:"ip"`
-	Port     string `yaml:"port"`
-	User     string `yaml:"user"`
-	Password string `yaml:"password"`
+	Ip        string `yaml:"ip"`
+	Port      string `yaml:"port"`
+	User      string `yaml:"user"`
+	Password  string `yaml:"password"`
+	TableName string `yaml:"tableName"`
 }
 
 var GConfig Config
