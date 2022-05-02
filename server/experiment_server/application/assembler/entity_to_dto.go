@@ -14,7 +14,7 @@ func AssembleExperimentDTO(experimentEntity *entity.Experiment, experimentDTO *d
 	experimentDTO.Title = experimentEntity.Title()
 	experimentDTO.UserID = experimentEntity.UserID()
 	for _, subjectRecordEntity := range experimentEntity.SubjectRecords() {
-		subjectRecordDTO := &dto.SujectRecordDTO{}
+		subjectRecordDTO := &dto.SubjectRecordDTO{}
 		AssembleSubjectRecordDTO(subjectRecordEntity, subjectRecordDTO)
 		experimentDTO.SubjectRecords = append(experimentDTO.SubjectRecords, subjectRecordDTO)
 	}

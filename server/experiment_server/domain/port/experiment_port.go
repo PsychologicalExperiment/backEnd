@@ -9,5 +9,4 @@ import (
 type ExperimentPort interface {
 	Save(ctx context.Context, exp *entity.Experiment) error 
 	Find(ctx context.Context, exp_id string) (*entity.Experiment, error)
-	Remove(ctx context.Context, exp *entity.Experiment) error
 }

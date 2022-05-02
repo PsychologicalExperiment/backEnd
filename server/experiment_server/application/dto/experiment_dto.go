@@ -8,10 +8,10 @@ type ExperimentDTO struct {
 	UserID         string
 	ExperimentTime int32
 	ParticipantNum int32
-	SubjectRecords []*SujectRecordDTO
+	SubjectRecords []*SubjectRecordDTO
 }
 
-type SujectRecordDTO struct {
+type SubjectRecordDTO struct {
 	SubjectRecordID string
 	ExperimentID    string
 	UserID          string

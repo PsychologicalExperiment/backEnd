@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/infrastructure/mysql/po"
+	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/infrastructure/persistence/mysql/po"
 
 	"gorm.io/gorm"
 	"gorm.io/driver/mysql"

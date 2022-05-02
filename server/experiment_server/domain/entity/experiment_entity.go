@@ -1,6 +1,11 @@
 package entity
 
+import (
+	"github.com/satori/go.uuid"
+)
+
 type Experiment struct {
+	id             uint
 	experimentID   string
 	title          string
 	internalName   string
@@ -9,6 +14,14 @@ type Experiment struct {
 	experimentTime int32
 	participantNum int32
 	subjectRecords []*SubjectRecord
+}
+
+func (e *Experiment) ID() uint {
+	return e.id
+}
+
+func (e *Experiment) setID(id uint) {
+	e.id = id 
 }
 
 func (e *Experiment) ExperimentID() string {
@@ -73,4 +86,9 @@ func (e *Experiment) SubjectRecords() []*SubjectRecord {
 
 func (e *Experiment) setSubjectRecords(subjectRecords []*SubjectRecord) {
 	e.subjectRecords = subjectRecords
+}
+
+//  生成实验ID
+func (e *Experiment) GenExperimentID() {
+	e.experimentID = uuid.NewV4().String()
 }

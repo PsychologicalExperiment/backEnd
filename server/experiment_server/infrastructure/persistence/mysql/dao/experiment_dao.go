@@ -3,13 +3,14 @@ package dao
 import (
 	"sync"
 
-	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/infrastructure/mysql/po"
+	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/infrastructure/persistence/mysql/po"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var (
 	once sync.Once
+	expDB *gorm.DB
 )
 
 type ExperimentDao struct {
@@ -21,11 +22,22 @@ func (e *ExperimentDao) TableName() string {
 }
 
 func (e *ExperimentDao) Client() *gorm.DB {
-	var db *gorm.DB
 	once.Do(func() {
-		dsn := "user:pass@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
-		db, _ := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-		db = db.Table(e.experimentPO.TableName())
+		dsn := "root:qianhaiwaibao@tcp(127.0.0.1:3306)/psychological_experiment?charset=utf8mb4&parseTime=True&loc=Local"
+		db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		if err != nil {
+			println("db error!")
+			return
+		}
+		expDB = db.Table(e.TableName())
+		// expDB = expDB
 	})
-	return db
+	// dsn := "root:qianhaiwaibao@tcp(127.0.0.1:3306)/psychological_experiment?charset=utf8mb4&parseTime=True&loc=Local"
+	// expDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// if err != nil {
+	// 	println("db error!")
+	// 	return &gorm.DB{}
+	// }
+	// expDB = expDB.Table(e.experimentPO.TableName())
+	return expDB
 }
