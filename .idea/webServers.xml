@@ -3,7 +3,7 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="75f4a9f0-aaba-47d1-ba2a-df544349d615" name="PsychologicalServer">
-        <fileTransfer rootFolder="/home/jacen/PsychologicalExperiment/backEnd" accessType="SFTP" host="118.195.204.214" port="22" sshConfigId="c80d1140-2a41-4561-b3bd-36a0a5812b95" sshConfig="jacen@118.195.204.214:22 password">
+        <fileTransfer rootFolder="/home/jacen" accessType="SFTP" host="118.195.204.214" port="22" sshConfigId="c80d1140-2a41-4561-b3bd-36a0a5812b95" sshConfig="jacen@118.195.204.214:22 password">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>

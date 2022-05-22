@@ -48,7 +48,8 @@ var errMsgMap = map[ErrCode]string{
 }
 
 var errToCommonCode = map[ErrCode]ErrCode{
-	OKCode:                     ErrCode(errCodePb.ErrorCode_CODE_SUCC),
+	OKCode: ErrCode(errCodePb.ErrorCode_CODE_SUCC),
+	// 注册相关
 	ErrUserInfoNotProvided:     ErrCode(errCodePb.ErrorCode_CODE_PARAM_ERR),
 	ErrParamsTypeErrorInServer: ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
 	ErrMySqlError:              ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
@@ -60,6 +61,9 @@ var errToCommonCode = map[ErrCode]ErrCode{
 	ErrPhoneNumberAlreadyUsed:  ErrCode(errCodePb.ErrorCode_CODE_PARAM_ERR),
 	ErrGenerateTokenFailed:     ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
 	ErrSetRedisFailed:          ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
+	// 登录相关
+	ErrorUserNotFound:     ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
+	ErrorPasswordNotRight: ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
 }
 
 type ErrCode uint32
@@ -101,5 +105,19 @@ func RegisterErrRsp(
 			Code: uint32(myerr.ErrorCode),
 			Msg:  myerr.ErrorMsg,
 		},
+	}
+}
+
+func CommonRsp(
+	err error,
+) *commonPb.CommonRsp {
+	myerr, ok := err.(ErrorImpl)
+	if !ok {
+		grpclog.Errorf("ErrRspQueryFromDruid|error usage of error code")
+		myerr = New(ErrParamsTypeErrorInServer)
+	}
+	return &commonPb.CommonRsp{
+		Code: uint32(myerr.ErrorCode),
+		Msg:  myerr.ErrorMsg,
 	}
 }

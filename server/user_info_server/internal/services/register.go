@@ -20,17 +20,21 @@ func (u *UserInfoServerImpl) Register(
 	err := u.registerParamCheck(req)
 	if err != nil {
 		grpclog.Errorf("param check failed, req: %+v", req)
-		return serverErr.RegisterErrRsp(err), nil
+		return &userInfoPb.RegisterRsp{CommonRsp: serverErr.CommonRsp(err)}, nil
 	}
 	token, err := pkg.GenerateUserToken(req.UserInfo.Email, util.GConfig.TokenSecretKey, time.Duration(time.Hour*time.Duration(util.GConfig.TokenExpireHour)))
 	if err != nil {
 		grpclog.Errorf("generate token failed, error: %+v, req: %+v", err, req)
-		return serverErr.RegisterErrRsp(serverErr.New(serverErr.ErrGenerateTokenFailed)), nil
+		return &userInfoPb.RegisterRsp{
+			CommonRsp: serverErr.CommonRsp(serverErr.New(serverErr.ErrGenerateTokenFailed)),
+		}, nil
 	}
 	err = u.setTokenForUser(ctx, req.UserInfo.Email, token)
 	if err != nil {
 		grpclog.Errorf("set token failed, req: %+v", req)
-		return serverErr.RegisterErrRsp(err), nil
+		return &userInfoPb.RegisterRsp{
+			CommonRsp: serverErr.CommonRsp(err),
+		}, nil
 	}
 	err = u.insertUserInfo(&userInfo{
 		Email:       req.UserInfo.Email,
@@ -42,7 +46,9 @@ func (u *UserInfoServerImpl) Register(
 	})
 	if err != nil {
 		grpclog.Errorf("inser user info failed, req: %+v", req)
-		return serverErr.RegisterErrRsp(err), nil
+		return &userInfoPb.RegisterRsp{
+			CommonRsp: serverErr.CommonRsp(err),
+		}, nil
 	}
 	rsp := &userInfoPb.RegisterRsp{
 		CommonRsp: &commonPb.CommonRsp{

@@ -2,10 +2,10 @@ package services
 
 import (
 	"context"
-	commonPb "github.com/PsychologicalExperiment/backEnd/api/api_common"
 	userInfoPb "github.com/PsychologicalExperiment/backEnd/api/user_info_server"
 	"github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/services/serverErr"
 	"google.golang.org/grpc/grpclog"
+	"strings"
 )
 
 func (u *UserInfoServerImpl) Login(
@@ -21,21 +21,27 @@ func (u *UserInfoServerImpl) Login(
 	} else {
 		user, err = u.getUserInfosByKey(searchKeyPhoneNumber, req.PhoneNumber)
 	}
-	if err != nil {
+	// 用户未找到
+	if err != nil || len(user) == 0 {
 		grpclog.Errorf("get user info failed, req: %+v", req)
-		rsp := &userInfoPb.LoginRsp{
-			CommonRsp: &commonPb.CommonRsp{
-				Code: uint32((serverErr.)),
-			},
+		resp := &userInfoPb.LoginRsp{
+			CommonRsp: serverErr.CommonRsp(serverErr.New(serverErr.ErrorUserNotFound)),
 		}
+		return resp, nil
 	}
-	rsp := &userInfoPb.LoginRsp{
-		CommonRsp: &commonPb.CommonRsp{
-			Code: uint32(serverErr.OKCode),
-			Msg:  "ok",
-		},
+	// 密码错误
+	if strings.Compare(user[0].Password, req.Password) != 0 {
+		grpclog.Errorf("password not right, req: %+v", req)
+		resp := &userInfoPb.LoginRsp{
+			CommonRsp: serverErr.CommonRsp(serverErr.New(serverErr.ErrorPasswordNotRight)),
+		}
+		return resp, nil
 	}
-	return rsp, nil
+	// 验证成功
+	resp := &userInfoPb.LoginRsp{
+		CommonRsp: serverErr.CommonRsp(serverErr.New(serverErr.OKCode)),
+	}
+	return resp, nil
 }
 
 func (u *UserInfoServerImpl) loginParamCheck(
