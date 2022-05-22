@@ -2,13 +2,9 @@ package services
 
 import (
 	"context"
-	"time"
-
 	commonPb "github.com/PsychologicalExperiment/backEnd/api/api_common"
 	userInfoPb "github.com/PsychologicalExperiment/backEnd/api/user_info_server"
 	"github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/services/serverErr"
-	"github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/util"
-	"github.com/PsychologicalExperiment/backEnd/util/pkg"
 	"google.golang.org/grpc/grpclog"
 )
 
@@ -27,14 +23,17 @@ func (u *UserInfoServerImpl) Login(
 	}
 	if err != nil {
 		grpclog.Errorf("get user info failed, req: %+v", req)
+		rsp := &userInfoPb.LoginRsp{
+			CommonRsp: &commonPb.CommonRsp{
+				Code: uint32((serverErr.)),
+			},
+		}
 	}
-	token, err := pkg.GenerateUserToken(email, util.GConfig.TokenSecretKey, time.Duration(time.Hour*time.Duration(util.GConfig.TokenExpireHour)))
 	rsp := &userInfoPb.LoginRsp{
 		CommonRsp: &commonPb.CommonRsp{
 			Code: uint32(serverErr.OKCode),
 			Msg:  "ok",
 		},
-		Token: token,
 	}
 	return rsp, nil
 }

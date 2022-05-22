@@ -4,6 +4,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/toml v1.1.0/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
 github.com/PsychologicalExperiment/backEnd v0.0.0-20220410153153-365d8503d6fa h1:mbNjgDjPLYVFFpYDZp9tkR6PemMqBQHiZLYi1RdQTA8=
 github.com/PsychologicalExperiment/backEnd v0.0.0-20220410153153-365d8503d6fa/go.mod h1:wLtEYGDF7UCV8VFbD19F1sMzlmqlMDTp5K+HdPeCDEQ=
+github.com/PsychologicalExperiment/backEnd v0.0.0-20220502100030-22fe8e8ac179 h1:ZEXxjtHhWMW1WfjPTIN9dwROM+4EyMG6uQAaOSZvomg=
+github.com/PsychologicalExperiment/backEnd v0.0.0-20220502100030-22fe8e8ac179/go.mod h1:wLtEYGDF7UCV8VFbD19F1sMzlmqlMDTp5K+HdPeCDEQ=
 github.com/PsychologicalExperiment/backEnd/util v0.0.0-20220410153153-365d8503d6fa h1:oPhTVPJFErhNN+zX1ClQ4gUMPWGuf4v48YLXWChxWQ8=
 github.com/PsychologicalExperiment/backEnd/util v0.0.0-20220410153153-365d8503d6fa/go.mod h1:2N3dJxh+dubc1WKKXRAcJMobdq/ejgZk8fgdy4h8Nc4=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
