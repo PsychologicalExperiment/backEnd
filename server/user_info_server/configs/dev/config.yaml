@@ -1,0 +1,7 @@
+LoggerConfig:
+  level: info
+  file_name: /Users/bytedance/Documents/code/PsychologicalExperiment/backEnd/log/run.log
+  max_size: 10
+  max_age: 7
+  max_backups: 100
+  local_time: true

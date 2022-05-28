@@ -13,7 +13,6 @@ func (u *UserInfoServerImpl) Login(
 	req *userInfoPb.LoginReq,
 ) (*userInfoPb.LoginRsp, error) {
 	grpclog.Infof("req: %+v", req)
-	var email string
 	var user []userInfo
 	var err error
 	if req.Email != "" {

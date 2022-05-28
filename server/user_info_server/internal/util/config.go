@@ -1,16 +1,18 @@
 package util
 
 import (
+	"fmt"
+	"github.com/PsychologicalExperiment/backEnd/util/plugins"
 	"io/ioutil"
 
-	"google.golang.org/grpc/grpclog"
 	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
-	SqlConfig       MySqlConf `yaml:"MySqlConf"`
-	TokenSecretKey  string    `yaml:"tokenSecretKey"`
-	TokenExpireHour int       `yaml:"tokenExpireHour"`
+	SqlConfig       MySqlConf            `yaml:"MySqlConf"`
+	TokenSecretKey  string               `yaml:"tokenSecretKey"`
+	TokenExpireHour int                  `yaml:"tokenExpireHour"`
+	LoggerConfig    plugins.LoggerConfig `yaml:"LoggerConfig"`
 }
 
 type MySqlConf struct {
@@ -24,14 +26,14 @@ type MySqlConf struct {
 var GConfig Config
 
 func InitConfig() {
-	config, err := ioutil.ReadFile("./config/config.yaml")
+	config, err := ioutil.ReadFile("./configs/dev/config.yaml")
 	if err != nil {
-		grpclog.Fatalf("read config failed, error: %+v", err)
+		fmt.Printf("read config failed, error: %+v", err)
 		return
 	}
 	err = yaml.Unmarshal(config, &GConfig)
 	if err != nil {
-		grpclog.Fatalf("decode yaml failed, error: %+v", err)
+		fmt.Printf("decode yaml failed, error: %+v", err)
 		return
 	}
 }
