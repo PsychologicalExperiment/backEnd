@@ -5,32 +5,37 @@ import (
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/infrastructure/persistence/mysql/po"
 )
 
-func AssembleExperimentEntity(experimentPO *po.ExperimentPO, subjectRecordPOList []*po.SubjectRecordPO) *entity.Experiment {
+func AssembleExperimentEntity(
+	experimentPO *po.ExperimentPO, 
+	subjectRecordPOList []*po.SubjectRecordPO,
+) *entity.Experiment {
 	var subjectRecords []*entity.SubjectRecord
 	for _, v := range subjectRecordPOList {
-		subjectRecordBuilder := &entity.SubejctRecordBuilder{}
-		subjectRecordBuilder.ExperimentID(v.ExperimentID).
-			UserID(v.UserID).
-			SubjectRecordID(v.SubjectRecordID).
+		subjectRecordBuilder := &entity.SubjectRecordBuilder{}
+		subjectRecordBuilder.ExperimentID(v.ExperimentId).
+			ParticipantId(v.ParticipantId).
+			SubjectRecordID(v.SubjectRecordId).
 			State(v.State)
 		subjectRecords = append(subjectRecords, subjectRecordBuilder.Build())
 	}
 	experimentBuilder := &entity.ExperimentBuilder{}
 	experimentBuilder.Description(experimentPO.Description).
-		ExperimentID(experimentPO.ExperimentID).
+		ExperimentID(experimentPO.ExperimentId).
 		Title(experimentPO.Title).
 		Description(experimentPO.Description).
-		UserID(experimentPO.UserID).
+		ResearcherId(experimentPO.ResearcherId).
 		ExperimentTime(experimentPO.ExperimentTime).
 		ParticipantNum(experimentPO.ParticipantNum)
 	return experimentBuilder.Build()
 }
 
-func AssembleSubjectRecordEntity(subjectRecordPO *po.SubjectRecordPO) *entity.SubjectRecord {
-	subjectRecordBuilder := &entity.SubejctRecordBuilder{}
-	subjectRecordBuilder.ExperimentID(subjectRecordPO.ExperimentID).
-		UserID(subjectRecordPO.UserID).
-		SubjectRecordID(subjectRecordPO.SubjectRecordID).
+func AssembleSubjectRecordEntity(
+	subjectRecordPO *po.SubjectRecordPO,
+) *entity.SubjectRecord {
+	subjectRecordBuilder := &entity.SubjectRecordBuilder{}
+	subjectRecordBuilder.ExperimentID(subjectRecordPO.ExperimentId).
+		ParticipantId(subjectRecordPO.ParticipantId).
+		SubjectRecordID(subjectRecordPO.SubjectRecordId).
 		State(subjectRecordPO.State)
 	return subjectRecordBuilder.Build()
 }

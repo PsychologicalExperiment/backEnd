@@ -23,7 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ExperimentServiceClient interface {
 	//  主试
-	NewExperiment(ctx context.Context, in *NewExperimentReq, opts ...grpc.CallOption) (*NewExperimentResp, error)
+	CreateExperiment(ctx context.Context, in *CreateExperimentReq, opts ...grpc.CallOption) (*CreateExperimentResp, error)
+	UpdateExperiment(ctx context.Context, in *UpdateExperimentReq, opts ...grpc.CallOption) (*UpdateExperimentResp, error)
 	QueryExperiment(ctx context.Context, in *QueryExperimentReq, opts ...grpc.CallOption) (*QueryExperimentResp, error)
 	QueryExperimentList(ctx context.Context, in *QueryExperimentListReq, opts ...grpc.CallOption) (*QueryExperimentListResp, error)
 	//  被试记录
@@ -41,9 +42,18 @@ func NewExperimentServiceClient(cc grpc.ClientConnInterface) ExperimentServiceCl
 	return &experimentServiceClient{cc}
 }
 
-func (c *experimentServiceClient) NewExperiment(ctx context.Context, in *NewExperimentReq, opts ...grpc.CallOption) (*NewExperimentResp, error) {
-	out := new(NewExperimentResp)
-	err := c.cc.Invoke(ctx, "/grpc.psychological_experiment.experiment_server.ExperimentService/NewExperiment", in, out, opts...)
+func (c *experimentServiceClient) CreateExperiment(ctx context.Context, in *CreateExperimentReq, opts ...grpc.CallOption) (*CreateExperimentResp, error) {
+	out := new(CreateExperimentResp)
+	err := c.cc.Invoke(ctx, "/grpc.psychological_experiment.experiment_server.ExperimentService/CreateExperiment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *experimentServiceClient) UpdateExperiment(ctx context.Context, in *UpdateExperimentReq, opts ...grpc.CallOption) (*UpdateExperimentResp, error) {
+	out := new(UpdateExperimentResp)
+	err := c.cc.Invoke(ctx, "/grpc.psychological_experiment.experiment_server.ExperimentService/UpdateExperiment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +119,8 @@ func (c *experimentServiceClient) QuerySubjectRecordList(ctx context.Context, in
 // for forward compatibility
 type ExperimentServiceServer interface {
 	//  主试
-	NewExperiment(context.Context, *NewExperimentReq) (*NewExperimentResp, error)
+	CreateExperiment(context.Context, *CreateExperimentReq) (*CreateExperimentResp, error)
+	UpdateExperiment(context.Context, *UpdateExperimentReq) (*UpdateExperimentResp, error)
 	QueryExperiment(context.Context, *QueryExperimentReq) (*QueryExperimentResp, error)
 	QueryExperimentList(context.Context, *QueryExperimentListReq) (*QueryExperimentListResp, error)
 	//  被试记录
@@ -124,8 +135,11 @@ type ExperimentServiceServer interface {
 type UnimplementedExperimentServiceServer struct {
 }
 
-func (UnimplementedExperimentServiceServer) NewExperiment(context.Context, *NewExperimentReq) (*NewExperimentResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method NewExperiment not implemented")
+func (UnimplementedExperimentServiceServer) CreateExperiment(context.Context, *CreateExperimentReq) (*CreateExperimentResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateExperiment not implemented")
+}
+func (UnimplementedExperimentServiceServer) UpdateExperiment(context.Context, *UpdateExperimentReq) (*UpdateExperimentResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateExperiment not implemented")
 }
 func (UnimplementedExperimentServiceServer) QueryExperiment(context.Context, *QueryExperimentReq) (*QueryExperimentResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryExperiment not implemented")
@@ -158,20 +172,38 @@ func RegisterExperimentServiceServer(s grpc.ServiceRegistrar, srv ExperimentServ
 	s.RegisterService(&ExperimentService_ServiceDesc, srv)
 }
 
-func _ExperimentService_NewExperiment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NewExperimentReq)
+func _ExperimentService_CreateExperiment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateExperimentReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ExperimentServiceServer).NewExperiment(ctx, in)
+		return srv.(ExperimentServiceServer).CreateExperiment(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/grpc.psychological_experiment.experiment_server.ExperimentService/NewExperiment",
+		FullMethod: "/grpc.psychological_experiment.experiment_server.ExperimentService/CreateExperiment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ExperimentServiceServer).NewExperiment(ctx, req.(*NewExperimentReq))
+		return srv.(ExperimentServiceServer).CreateExperiment(ctx, req.(*CreateExperimentReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExperimentService_UpdateExperiment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateExperimentReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExperimentServiceServer).UpdateExperiment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.psychological_experiment.experiment_server.ExperimentService/UpdateExperiment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExperimentServiceServer).UpdateExperiment(ctx, req.(*UpdateExperimentReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -292,8 +324,12 @@ var ExperimentService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ExperimentServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "NewExperiment",
-			Handler:    _ExperimentService_NewExperiment_Handler,
+			MethodName: "CreateExperiment",
+			Handler:    _ExperimentService_CreateExperiment_Handler,
+		},
+		{
+			MethodName: "UpdateExperiment",
+			Handler:    _ExperimentService_UpdateExperiment_Handler,
 		},
 		{
 			MethodName: "QueryExperiment",

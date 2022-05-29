@@ -26,7 +26,7 @@ func TestExperiment_Save(t *testing.T) {
 				ctx: context.Background(),
 				experimentEntity: (&entity.ExperimentBuilder{}).Title("实验标题").ParticipantNum(10).Build(),
 			},
-			wantErr: true,
+			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
@@ -51,7 +51,16 @@ func TestExperiment_Find(t *testing.T) {
 		want    *entity.Experiment
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "case2",
+			args: args{
+				ctx: context.Background(),
+				exp_id: "6a56dc56-7d3d-4ee9-b2b7-9072ffcc509b",
+			},
+			want: nil,
+			wantErr: true,
+			// TODO: Add test cases.
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

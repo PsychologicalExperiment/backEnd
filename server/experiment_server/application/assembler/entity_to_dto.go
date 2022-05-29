@@ -7,12 +7,11 @@ import (
 
 func AssembleExperimentDTO(experimentEntity *entity.Experiment, experimentDTO *dto.ExperimentDTO) {
 	experimentDTO.Description = experimentEntity.Description()
-	experimentDTO.ExperimentID = experimentEntity.ExperimentID()
+	experimentDTO.ExperimentId = experimentEntity.ExperimentId()
 	experimentDTO.ExperimentTime = experimentEntity.ExperimentTime()
-	experimentDTO.InternalName = experimentEntity.InternalName()
 	experimentDTO.ParticipantNum = experimentEntity.ParticipantNum()
 	experimentDTO.Title = experimentEntity.Title()
-	experimentDTO.UserID = experimentEntity.UserID()
+	experimentDTO.ParticipantNum = experimentEntity.ParticipantNum()
 	for _, subjectRecordEntity := range experimentEntity.SubjectRecords() {
 		subjectRecordDTO := &dto.SubjectRecordDTO{}
 		AssembleSubjectRecordDTO(subjectRecordEntity, subjectRecordDTO)
@@ -21,8 +20,9 @@ func AssembleExperimentDTO(experimentEntity *entity.Experiment, experimentDTO *d
 }
 
 func AssembleSubjectRecordDTO(subjectRecordEntity *entity.SubjectRecord, subjectRecordDTO *dto.SubjectRecordDTO) {
-	subjectRecordDTO.SubjectRecordID = subjectRecordEntity.SubjectRecordID()
-	subjectRecordDTO.ExperimentID = subjectRecordEntity.ExperimentID()
-	subjectRecordDTO.UserID = subjectRecordEntity.UserID()
+	println("subject record: ", subjectRecordEntity.SubjectRecordId())
+	subjectRecordDTO.SubjectRecordId = subjectRecordEntity.SubjectRecordId()
+	subjectRecordDTO.ExperimentId = subjectRecordEntity.ExperimentId()
+	subjectRecordDTO.ParticipantId = subjectRecordEntity.ParticipantId()
 	subjectRecordDTO.State = subjectRecordEntity.State()
 }

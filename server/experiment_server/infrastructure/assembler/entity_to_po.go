@@ -8,22 +8,24 @@ import (
 // 
 func AssembleExperimentPO(experimentEntity *entity.Experiment, experimentPO *po.ExperimentPO) {
 	experimentPO.ID = experimentEntity.ID()
-	experimentPO.ExperimentID = experimentEntity.ExperimentID()
+	experimentPO.ExperimentId = experimentEntity.ExperimentId()
 	experimentPO.Title = experimentEntity.Title()
 	experimentPO.Description = experimentEntity.Description()
-	experimentPO.UserID = experimentEntity.UserID()
+	experimentPO.ResearcherId = experimentEntity.ResearcherId()
 	experimentPO.ExperimentTime = experimentEntity.ExperimentTime()
 	experimentPO.ParticipantNum = experimentEntity.ParticipantNum()
+	experimentPO.State = experimentEntity.State()
 }
 
 func AssembleSubjectRecordPO(subjectRecordEntity *entity.SubjectRecord, subjectRecordPO *po.SubjectRecordPO) {
 	subjectRecordPO.ID = subjectRecordEntity.ID()
-	subjectRecordPO.SubjectRecordID = subjectRecordEntity.SubjectRecordID()
-	subjectRecordPO.ExperimentID = subjectRecordEntity.ExperimentID()
-	subjectRecordPO.UserID = subjectRecordEntity.UserID()
+	subjectRecordPO.SubjectRecordId = subjectRecordEntity.SubjectRecordId()
+	subjectRecordPO.ExperimentId = subjectRecordEntity.ExperimentId()
+	subjectRecordPO.ParticipantId = subjectRecordEntity.ParticipantId()
 	subjectRecordPO.State = subjectRecordEntity.State()
-	subjectRecordPO.FinishTime = subjectRecordEntity.FinishTime()
+	// subjectRecordPO.FinishTime = subjectRecordEntity.FinishTime()
 }
+
 // func AssembleExperimentEntity(experimentPO *po.ExperimentPO, subjectRecordPOList []*po.SubjectRecordPO) *entity.Experiment {
 // 	var subjectRecords []*entity.SubejctRecord
 // 	for _, v := range subjectRecordPOList {

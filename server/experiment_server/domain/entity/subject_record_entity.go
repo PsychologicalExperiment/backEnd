@@ -1,14 +1,16 @@
 package entity
 
-import "time"
+import (
+	uuid "github.com/satori/go.uuid"
+)
 
 type SubjectRecord struct {
 	id              uint
-	subjectRecordID string
-	experimentID    string
-	userID          string
+	subjectRecordId string
+	experimentId    string
+	participantId   string
 	state           int32
-	finishTime      time.Time
+	timeTaken       string
 }
 
 func (s *SubjectRecord) ID() uint {
@@ -19,28 +21,28 @@ func (s *SubjectRecord) setID(id uint) {
 	s.id = id
 }
 
-func (s *SubjectRecord) SubjectRecordID() string {
-	return s.subjectRecordID
+func (s *SubjectRecord) SubjectRecordId() string {
+	return s.subjectRecordId
 }
 
-func (s *SubjectRecord) setSubjectRecordID(id string) {
-	s.subjectRecordID = id
+func (s *SubjectRecord) setSubjectRecordId(id string) {
+	s.subjectRecordId = id
 }
 
-func (s *SubjectRecord) setExperimentID(id string) {
-	s.experimentID = id
+func (s *SubjectRecord) setExperimentId(id string) {
+	s.experimentId = id
 }
 
-func (s *SubjectRecord) ExperimentID() string {
-	return s.experimentID
+func (s *SubjectRecord) ExperimentId() string {
+	return s.experimentId
 }
 
-func (s *SubjectRecord) setUserID(id string) {
-	s.userID = id
+func (s *SubjectRecord) setParticipantId(id string) {
+	s.participantId = id
 }
 
-func (s *SubjectRecord) UserID() string {
-	return s.userID
+func (s *SubjectRecord) ParticipantId() string {
+	return s.participantId
 }
 
 func (s *SubjectRecord) setState(state int32) {
@@ -51,10 +53,14 @@ func (s *SubjectRecord) State() int32 {
 	return s.state
 }
 
-func (s *SubjectRecord) FinishTime() time.Time {
-	return s.finishTime
+func (s *SubjectRecord) TimeTaken() string {
+	return s.timeTaken
 }
 
-func (s *SubjectRecord) setFinishTime(t time.Time) {
-	s.finishTime = t
+func (s *SubjectRecord) setFinishTime(t string) {
+	s.timeTaken = t
+}
+
+func (s *SubjectRecord) GenSubjectRecordId() {
+	s.subjectRecordId = uuid.NewV4().String()
 }
