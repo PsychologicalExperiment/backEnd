@@ -5,7 +5,7 @@ replace github.com/PsychologicalExperiment/backEnd/api/user_info_server => ../..
 go 1.16
 
 require (
-	github.com/PsychologicalExperiment/backEnd v0.0.0-20220522145057-7affc71739be
+	github.com/PsychologicalExperiment/backEnd v0.0.0-20220612075717-1be43e0b7bde
 	//github.com/PsychologicalExperiment/backEnd/api/user_info_server v0.0.0-20220522145057-7affc71739be
 	github.com/PsychologicalExperiment/backEnd/util v0.0.0-20220410153153-365d8503d6fa
 	github.com/go-redis/redis/v8 v8.11.5
