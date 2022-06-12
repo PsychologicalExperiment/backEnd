@@ -10,8 +10,9 @@ service UserService{
     // register a user
     rpc Register (RegisterReq) returns (RegisterRsp) {}
     // login a user
-
     rpc Login (LoginReq) returns (LoginRsp) {}
+    // 查询用户信息
+    rpc GetUserInfoBySearchKey (GetUserInfoBySearchKeyReq) returns (GetUserInfoBySearchKeyRsp) {}
 }
 
 enum UserType{
@@ -70,5 +71,19 @@ message LoginReq{
 message LoginRsp{
     // common rsp
     grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    // user info
     UserInfo user_info = 2;
 }
+
+message GetUserInfoBySearchKeyReq {
+    string email = 1;
+    string phone_number = 2;
+}
+
+message GetUserInfoBySearchKeyRsp {
+    // common rsp
+    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    // user info
+    UserInfo user_info = 2;
+}
+

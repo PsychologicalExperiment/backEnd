@@ -9,6 +9,8 @@ github.com/PsychologicalExperiment/backEnd v0.0.0-20220612075717-1be43e0b7bde h1
 github.com/PsychologicalExperiment/backEnd v0.0.0-20220612075717-1be43e0b7bde/go.mod h1:wLtEYGDF7UCV8VFbD19F1sMzlmqlMDTp5K+HdPeCDEQ=
 github.com/PsychologicalExperiment/backEnd v0.0.0-20220612081424-2db32d97b7ef h1:hC+p/x4VDBZfxfKY0FdpJidvxVXTO8ojhDIqUemS24I=
 github.com/PsychologicalExperiment/backEnd v0.0.0-20220612081424-2db32d97b7ef/go.mod h1:wLtEYGDF7UCV8VFbD19F1sMzlmqlMDTp5K+HdPeCDEQ=
+github.com/PsychologicalExperiment/backEnd v0.0.0-20220612085330-3e6c942d2599 h1:eq4lcbdFhRvPnFzW5AVNixXwUsSy84WE0s6b9avLb1M=
+github.com/PsychologicalExperiment/backEnd v0.0.0-20220612085330-3e6c942d2599/go.mod h1:wLtEYGDF7UCV8VFbD19F1sMzlmqlMDTp5K+HdPeCDEQ=
 github.com/PsychologicalExperiment/backEnd/util v0.0.0-20220410153153-365d8503d6fa h1:oPhTVPJFErhNN+zX1ClQ4gUMPWGuf4v48YLXWChxWQ8=
 github.com/PsychologicalExperiment/backEnd/util v0.0.0-20220410153153-365d8503d6fa/go.mod h1:2N3dJxh+dubc1WKKXRAcJMobdq/ejgZk8fgdy4h8Nc4=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
