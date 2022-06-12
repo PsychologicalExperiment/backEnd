@@ -18,6 +18,8 @@ func main() {
 	// 初始设置
 	util.InitConfig()
 
+	fmt.Printf("go backend start111...\n")
+
 	// 设置grpc log
 	logger := plugins.NewLogger(&util.GConfig.LoggerConfig)
 	grpclog.SetLoggerV2(logger)

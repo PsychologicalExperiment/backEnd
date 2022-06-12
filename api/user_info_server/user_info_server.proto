@@ -10,6 +10,7 @@ service UserService{
     // register a user
     rpc Register (RegisterReq) returns (RegisterRsp) {}
     // login a user
+
     rpc Login (LoginReq) returns (LoginRsp) {}
 }
 

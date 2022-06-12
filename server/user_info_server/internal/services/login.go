@@ -39,6 +39,8 @@ func (u *UserInfoServerImpl) Login(
 	// 验证成功
 	resp := &userInfoPb.LoginRsp{
 		CommonRsp: serverErr.CommonRsp(serverErr.New(serverErr.OKCode)),
+		UserInfo: &userInfoPb.UserInfo{UserType: userInfoPb.UserType(user[0].UserType), Email: user[0].Email, PhoneNumber: user[0].PhoneNumber,
+			UserName: user[0].UserName, Gender: userInfoPb.GenderType(user[0].Gender), Extra: user[0].Extra},
 	}
 	return resp, nil
 }
