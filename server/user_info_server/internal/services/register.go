@@ -2,13 +2,9 @@ package services
 
 import (
 	"context"
-	"time"
-
 	commonPb "github.com/PsychologicalExperiment/backEnd/api/api_common"
 	userInfoPb "github.com/PsychologicalExperiment/backEnd/api/user_info_server"
 	"github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/services/serverErr"
-	"github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/util"
-	"github.com/PsychologicalExperiment/backEnd/util/pkg"
 	"google.golang.org/grpc/grpclog"
 )
 
@@ -22,20 +18,25 @@ func (u *UserInfoServerImpl) Register(
 		grpclog.Errorf("param check failed, req: %+v", req)
 		return &userInfoPb.RegisterRsp{CommonRsp: serverErr.CommonRsp(err)}, nil
 	}
-	token, err := pkg.GenerateUserToken(req.UserInfo.Email, util.GConfig.TokenSecretKey, time.Duration(time.Hour*time.Duration(util.GConfig.TokenExpireHour)))
-	if err != nil {
-		grpclog.Errorf("generate token failed, error: %+v, req: %+v", err, req)
-		return &userInfoPb.RegisterRsp{
-			CommonRsp: serverErr.CommonRsp(serverErr.New(serverErr.ErrGenerateTokenFailed)),
-		}, nil
-	}
-	err = u.setTokenForUser(ctx, req.UserInfo.Email, token)
-	if err != nil {
-		grpclog.Errorf("set token failed, req: %+v", req)
-		return &userInfoPb.RegisterRsp{
-			CommonRsp: serverErr.CommonRsp(err),
-		}, nil
-	}
+
+	/*
+		token鉴权统一放在node bff层，不在go后端
+	*/
+	//token, err := pkg.GenerateUserToken(req.UserInfo.Email, util.GConfig.TokenSecretKey, time.Duration(time.Hour*time.Duration(util.GConfig.TokenExpireHour)))
+	//if err != nil {
+	//	grpclog.Errorf("generate token failed, error: %+v, req: %+v", err, req)
+	//	return &userInfoPb.RegisterRsp{
+	//		CommonRsp: serverErr.CommonRsp(serverErr.New(serverErr.ErrGenerateTokenFailed)),
+	//	}, nil
+	//}
+	//err = u.setTokenForUser(ctx, req.UserInfo.Email, token)
+	//if err != nil {
+	//	grpclog.Errorf("set token failed, req: %+v", req)
+	//	return &userInfoPb.RegisterRsp{
+	//		CommonRsp: serverErr.CommonRsp(err),
+	//	}, nil
+	//}
+
 	err = u.insertUserInfo(&userInfo{
 		Email:       req.UserInfo.Email,
 		PhoneNumber: req.UserInfo.PhoneNumber,
@@ -55,7 +56,7 @@ func (u *UserInfoServerImpl) Register(
 			Code: uint32(serverErr.OKCode),
 			Msg:  "ok",
 		},
-		Uin: token,
+		Uin: "",
 	}
 	return rsp, nil
 }
