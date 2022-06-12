@@ -65,7 +65,7 @@ func (u *UserInfoServerImpl) getUserInfosByKey(
 	users := []userInfo{}
 	res := u.sqlConn.Table("user_info").Where(fmt.Sprintf("%s = ?", queryKey), queryVal).Debug().Find(&users)
 	//res := u.sqlConn.Where(fmt.Sprintf("%s = ?", queryKey), queryVal).Debug().Find(&users)
-	_ = u.sqlConn.Where(fmt.Sprintf("%s = ?", queryKey), queryVal).Debug().Find(&users)
+	//_ = u.sqlConn.Where(fmt.Sprintf("%s = ?", queryKey), queryVal).Debug().Find(&users)
 	if res.Error != nil {
 		grpclog.Errorf("read db failed, error: %+v", res.Error)
 		return nil, serverErr.New(serverErr.ErrMySqlError)

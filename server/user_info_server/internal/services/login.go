@@ -39,6 +39,7 @@ func (u *UserInfoServerImpl) Login(
 	// 验证成功
 	resp := &userInfoPb.LoginRsp{
 		CommonRsp: serverErr.CommonRsp(serverErr.New(serverErr.OKCode)),
+		User,
 	}
 	return resp, nil
 }
