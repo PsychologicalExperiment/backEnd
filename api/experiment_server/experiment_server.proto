@@ -1,0 +1,159 @@
+syntax = "proto3";
+
+package grpc.psychological_experiment.experiment_server;
+
+option go_package = "github.com/PsychologicalExperiment/backEnd/api/experiment_server";
+
+import "api/api_common/api_common.proto";
+
+service ExperimentService{
+    //  主试
+    rpc CreateExperiment (CreateExperimentReq) returns (CreateExperimentResp);              //  发布一个新实验
+    rpc UpdateExperiment (UpdateExperimentReq) returns (UpdateExperimentResp);              //  更新一个实验
+    rpc QueryExperiment (QueryExperimentReq) returns (QueryExperimentResp);                 //  查询实验
+    rpc QueryExperimentList (QueryExperimentListReq) returns (QueryExperimentListResp);     //  查询实验列表
+
+    //  被试记录
+    rpc CreateSubjectRecord (CreateSubjectRecordReq) returns (CreateSubjectRecordResp);             // 参与一个实验
+    rpc UpdateSubjectRecord (UpdateSubjectRecordReq) returns (UpdateSubjectRecordResp);             // 更新被试记录
+    rpc QuerySubjectRecord (QuerySubjectRecordReq) returns (QuerySubjectRecordResp);                //  查询被试记录
+    rpc QuerySubjectRecordList (QuerySubjectRecordListReq) returns (QuerySubjectRecordListResp);    // 查询被试记录列表
+}
+
+enum SubjectRecordState {
+    SUBJECTRECORD_INIT = 0;       //  初始态
+    SUBJECTRECORD_FINISHED = 1;   //  完成
+    SUBJECTRECORD_APPROVED = 2;   //  同意
+    SUBJECTRECORD_TIMEOUT = 3;    //  超时
+    SUBJECTRECORD_RETURNED = 4;   //  回绝
+}
+
+enum ExperimentState {
+    EXP_DRAFT = 0;
+    EXP_PUBLISHED = 1;
+    EXP_FINISHED = 2;
+    EXP_DELETED = 3;
+}
+
+message SubjectRecordInfo {
+    string subject_record_id = 1; // 被试记录id
+    string experiment_id = 2;     // 实验id
+    string participant_id = 3;    // 被实id
+    string time_taken = 4;        // 实验耗时
+    SubjectRecordState state = 5; // 被试记录状态
+}
+
+message ExperimentInfo {
+    string experiment_id = 1;       //  实验id
+    string title = 2;               //  实验标题
+    string description = 3;         //  实验描述
+    string researcher_id = 4;       //  主试id
+    int32 experiment_time = 5;      //  实验时间/min
+    int32 participant_num = 6;      //  实验所需人数
+    ExperimentState state = 7;     //  状态  0-草稿箱 1-已发布 2-已完成 3-已删除
+    string create_time = 8;         //  发布时间
+    string update_time = 9;         //  更新时间
+    int32 subject_records_num = 10; //  被试记录数
+}
+
+
+message CreateExperimentReq {
+    string request_id = 1;
+    string title = 2; 
+    string description = 3;
+    string researcher_id = 4;
+    int32 experiment_time = 5;
+    int32 participant_num = 6;
+}
+
+message CreateExperimentResp {
+    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    string experiment_id = 2;
+}
+
+message UpdateExperimentReq {
+    string request_id = 1;
+    string experiment_id = 2;   //  实验id
+    string title = 3;           //  实验标题
+    string description = 4;     //  实验描述
+    string researcher_id = 5;   //  主试id
+    int32 experiment_time = 6;  //  实验时间/min
+    int32 participant_num = 7;  //  实验所需人数
+    ExperimentState state = 8; //  状态  0-草稿箱 1-已发布 2-已完成 3-已删除
+}
+
+message UpdateExperimentResp {
+    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    string experiment_id = 2; 
+}
+
+message QueryExperimentReq {
+    string request_id = 1;
+    string experiment_id = 2; // 实验id
+}
+
+message QueryExperimentResp {
+    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    ExperimentInfo exp_info = 2;
+    repeated SubjectRecordInfo subject_records = 3;
+}
+
+message QueryExperimentListReq {
+    string request_id = 1;
+    string researcher_id = 2; // 主试id
+    int32 page_index = 3;  
+    int32 page_size = 4;   
+
+}
+
+message QueryExperimentListResp {
+    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    int32 total_num = 2;
+    repeated ExperimentInfo exp_info_list = 3;
+}
+
+message CreateSubjectRecordReq {
+    string request_id = 1;
+    string experiment_id = 2;     // 实验id
+    string participant_id = 3;    // 被实id
+}
+
+message CreateSubjectRecordResp {
+    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    string subject_record_id = 2; // 被试记录id
+}
+
+message UpdateSubjectRecordReq {
+    string request_id = 1;
+    string subject_record_id = 2;  // 被试id
+    string user_id = 3;            // 用户id 
+    SubjectRecordState state = 4;
+}
+
+message UpdateSubjectRecordResp {
+    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    string subject_record_id = 2; 
+}
+
+message QuerySubjectRecordReq {
+    string request_id = 1;
+    string subject_record_id = 2; 
+}
+
+message QuerySubjectRecordResp {
+    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    SubjectRecordInfo subject_record = 2;
+}
+
+message QuerySubjectRecordListReq {
+    string request_id = 1;
+    string experiment_id = 2; 
+    int32 page_index = 3;
+    int32 page_size = 4;
+}
+
+message QuerySubjectRecordListResp {
+    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    int32 total_num = 2;
+    repeated SubjectRecordInfo subject_record_list = 3;
+}
