@@ -5,8 +5,8 @@ package grpc.psychological_experiment.api_common;
 option go_package = "github.com/PsychologicalExperiment/backEnd/api/api_common";
 
 message CommonHead{
-    // uin 用户标识
-    string uin = 1;
+    // token 用户标识
+    string token = 1;
 }
 
 message CommonRsp{
