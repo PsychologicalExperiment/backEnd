@@ -1,0 +1,11 @@
+{"level":"WARN","ts":"2022-05-28T18:23:35.271+0800","caller":"grpclog/component.go:41","msg":"[core]grpc: Server.Serve failed to create ServerTransport: connection error: desc = \"transport: http2Server.HandleStreams failed to receive the preface from client: read tcp 127.0.0.1:50051->127.0.0.1:61561: read: connection reset by peer\""}
+{"level":"INFO","ts":"2022-05-29T10:37:37.413+0800","caller":"services/register.go:19","msg":"req: password:\"123456\""}
+{"level":"ERROR","ts":"2022-05-29T10:37:37.414+0800","caller":"services/register.go:67","msg":"userInfo is not provided, req: password:\"123456\""}
+{"level":"ERROR","ts":"2022-05-29T10:37:37.414+0800","caller":"services/register.go:22","msg":"param check failed, req: password:\"123456\""}
+{"level":"INFO","ts":"2022-05-29T10:46:22.790+0800","caller":"services/register.go:19","msg":"req: user_info:{email:\"wuyinggor@qianhai.com\"  phone_number:\"123456789\"  user_name:\"wuyinggor\"}  password:\"123456\""}
+{"level":"INFO","ts":"2022-05-29T18:31:46.380+0800","caller":"services/login.go:15","msg":"req: email:\"wuyinggor@qianhai2.com\" phone_number:\"12345678\" password:\"123456\""}
+{"level":"ERROR","ts":"2022-05-29T18:31:46.389+0800","caller":"services/login.go:25","msg":"get user info failed, req: email:\"wuyinggor@qianhai2.com\" phone_number:\"12345678\" password:\"123456\""}
+{"level":"INFO","ts":"2022-12-11T23:35:11.281+0800","caller":"grpclog/component.go:36","msg":"[core][Server #1] Server created"}
+{"level":"INFO","ts":"2022-12-11T23:35:11.282+0800","caller":"grpclog/component.go:36","msg":"[core][Server #1 ListenSocket #2] ListenSocket created"}
+{"level":"INFO","ts":"2022-12-18T17:04:33.698+0800","caller":"grpclog/component.go:36","msg":"[core][Server #1] Server created"}
+{"level":"INFO","ts":"2022-12-18T17:04:33.699+0800","caller":"grpclog/component.go:36","msg":"[core][Server #1 ListenSocket #2] ListenSocket created"}

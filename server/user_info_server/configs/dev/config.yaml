@@ -1,0 +1,13 @@
+LoggerConfig:
+  level: info
+  file_name: /Users/bytedance/Documents/code/PsychologicalExperiment/backEnd/log/run.log
+  max_size: 10
+  max_age: 7
+  max_backups: 100
+  local_time: true
+MySqlConf:
+  ip: 127.0.0.1
+  port: 3306
+  user: root
+  password: qianhaiwaibao
+  dbName: psychological_experiment

@@ -11,6 +11,7 @@ import (
 
 const (
 	OKCode ErrCode = iota + 0
+	// 注册相关
 	ErrUserInfoNotProvided
 	ErrParamsTypeErrorInServer
 	ErrMySqlError
@@ -18,13 +19,18 @@ const (
 	ErrEmailNotProvided
 	ErrPasswordNotProvided
 	ErrGenderInvalid
+	ErrUserTypeInvalid
 	ErrPhoneNumberAlreadyUsed
 	ErrGenerateTokenFailed
 	ErrSetRedisFailed
+	// 登录相关
+	ErrorUserNotFound
+	ErrorPasswordNotRight
 )
 
 var errMsgMap = map[ErrCode]string{
-	OKCode:                     "ok",
+	OKCode: "ok",
+	// 注册相关
 	ErrUserInfoNotProvided:     "param error, user info is not provided",
 	ErrParamsTypeErrorInServer: "internal error, param wrong in server",
 	ErrMySqlError:              "internal error, db sql error, please contact us",
@@ -32,13 +38,18 @@ var errMsgMap = map[ErrCode]string{
 	ErrEmailNotProvided:        "param error, email is empty",
 	ErrPasswordNotProvided:     "param error, password is empty",
 	ErrGenderInvalid:           "param error, gender is invalid",
+	ErrUserTypeInvalid:         "param error, user type is invalid",
 	ErrPhoneNumberAlreadyUsed:  "param error, phone number is already used",
 	ErrGenerateTokenFailed:     "internal error, generate token failed",
 	ErrSetRedisFailed:          "internal error, set redis failed",
+	// 登录相关
+	ErrorUserNotFound:     "param error, user not found",
+	ErrorPasswordNotRight: "param error, password not correct",
 }
 
 var errToCommonCode = map[ErrCode]ErrCode{
-	OKCode:                     ErrCode(errCodePb.ErrorCode_CODE_SUCC),
+	OKCode: ErrCode(errCodePb.ErrorCode_CODE_SUCC),
+	// 注册相关
 	ErrUserInfoNotProvided:     ErrCode(errCodePb.ErrorCode_CODE_PARAM_ERR),
 	ErrParamsTypeErrorInServer: ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
 	ErrMySqlError:              ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
@@ -46,9 +57,13 @@ var errToCommonCode = map[ErrCode]ErrCode{
 	ErrEmailNotProvided:        ErrCode(errCodePb.ErrorCode_CODE_PARAM_ERR),
 	ErrPasswordNotProvided:     ErrCode(errCodePb.ErrorCode_CODE_PARAM_ERR),
 	ErrGenderInvalid:           ErrCode(errCodePb.ErrorCode_CODE_PARAM_ERR),
+	ErrUserTypeInvalid:         ErrCode(errCodePb.ErrorCode_CODE_PARAM_ERR),
 	ErrPhoneNumberAlreadyUsed:  ErrCode(errCodePb.ErrorCode_CODE_PARAM_ERR),
 	ErrGenerateTokenFailed:     ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
 	ErrSetRedisFailed:          ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
+	// 登录相关
+	ErrorUserNotFound:     ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
+	ErrorPasswordNotRight: ErrCode(errCodePb.ErrorCode_CODE_INTERNAL_ERR),
 }
 
 type ErrCode uint32
@@ -90,6 +105,19 @@ func RegisterErrRsp(
 			Code: uint32(myerr.ErrorCode),
 			Msg:  myerr.ErrorMsg,
 		},
-		Token: "",
+	}
+}
+
+func CommonRsp(
+	err error,
+) *commonPb.CommonRsp {
+	myerr, ok := err.(ErrorImpl)
+	if !ok {
+		grpclog.Errorf("ErrRspQueryFromDruid|error usage of error code")
+		myerr = New(ErrParamsTypeErrorInServer)
+	}
+	return &commonPb.CommonRsp{
+		Code: uint32(myerr.ErrorCode),
+		Msg:  myerr.ErrorMsg,
 	}
 }
