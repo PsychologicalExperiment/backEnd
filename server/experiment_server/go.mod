@@ -5,8 +5,10 @@ replace github.com/PsychologicalExperiment/backEnd/api/experiment_server => ../.
 go 1.16
 
 require (
-	github.com/PsychologicalExperiment/backEnd v0.0.0-20220405085841-41916c8ea5cb // indirect
+	github.com/PsychologicalExperiment/backEnd v0.0.0-20220405085841-41916c8ea5cb
 	github.com/PsychologicalExperiment/backEnd/api/experiment_server v0.0.0-00010101000000-000000000000
+	github.com/PsychologicalExperiment/backEnd/util v0.0.0-20220410153153-365d8503d6fa
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/satori/go.uuid v1.2.0
 	google.golang.org/grpc v1.45.0
 	gopkg.in/validator.v2 v2.0.1
