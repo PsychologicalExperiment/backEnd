@@ -50,6 +50,8 @@ message UserInfo{
 message RegisterReq{
     //user info
     UserInfo user_info = 1;
+    // password
+    string password = 2;
 }
 
 message RegisterRsp{
