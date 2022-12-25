@@ -6,7 +6,7 @@ LoggerConfig:
   max_backups: 100
   local_time: true
 MySqlConf:
-  ip: 127.0.0.1
+  ip: 118.195.204.214
   port: 3306
   user: root
   password: qianhaiwaibao

@@ -5,6 +5,7 @@ import (
 	userInfoPb "github.com/PsychologicalExperiment/backEnd/api/user_info_server"
 	"github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/services/serverErr"
 	"google.golang.org/grpc/grpclog"
+	"strconv"
 	"strings"
 )
 
@@ -40,7 +41,7 @@ func (u *UserInfoServerImpl) Login(
 	resp := &userInfoPb.LoginRsp{
 		CommonRsp: serverErr.CommonRsp(serverErr.New(serverErr.OKCode)),
 		UserInfo: &userInfoPb.UserInfo{UserType: userInfoPb.UserType(user[0].UserType), Email: user[0].Email, PhoneNumber: user[0].PhoneNumber,
-			UserName: user[0].UserName, Gender: userInfoPb.GenderType(user[0].Gender), Extra: user[0].Extra},
+			UserName: user[0].UserName, Gender: userInfoPb.GenderType(user[0].Gender), Extra: user[0].Extra, Uid: strconv.Itoa(int(user[0].ID))},
 	}
 	return resp, nil
 }
