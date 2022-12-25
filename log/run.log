@@ -9,3 +9,17 @@
 {"level":"INFO","ts":"2022-12-11T23:35:11.282+0800","caller":"grpclog/component.go:36","msg":"[core][Server #1 ListenSocket #2] ListenSocket created"}
 {"level":"INFO","ts":"2022-12-18T17:04:33.698+0800","caller":"grpclog/component.go:36","msg":"[core][Server #1] Server created"}
 {"level":"INFO","ts":"2022-12-18T17:04:33.699+0800","caller":"grpclog/component.go:36","msg":"[core][Server #1 ListenSocket #2] ListenSocket created"}
+{"level":"INFO","ts":"2022-12-25T19:08:56.799+0800","caller":"grpclog/component.go:36","msg":"[core][Server #1] Server created"}
+{"level":"INFO","ts":"2022-12-25T19:08:56.800+0800","caller":"grpclog/component.go:36","msg":"[core][Server #1 ListenSocket #2] ListenSocket created"}
+{"level":"INFO","ts":"2022-12-25T19:13:33.891+0800","caller":"grpclog/component.go:36","msg":"[core][Server #1] Server created"}
+{"level":"INFO","ts":"2022-12-25T19:13:33.891+0800","caller":"grpclog/component.go:36","msg":"[core][Server #1 ListenSocket #2] ListenSocket created"}
+{"level":"INFO","ts":"2022-12-25T19:14:21.759+0800","caller":"grpclog/component.go:36","msg":"[core]CPU time info is unavailable on non-linux environments."}
+{"level":"INFO","ts":"2022-12-25T19:14:21.763+0800","caller":"services/login.go:16","msg":"req: email:\"wuyinggor@qianhai.com\" password:\"e10adc3949ba59abbe56e057f20f883e\""}
+{"level":"ERROR","ts":"2022-12-25T19:14:21.764+0800","caller":"services/login.go:26","msg":"get user info failed, req: email:\"wuyinggor@qianhai.com\" password:\"e10adc3949ba59abbe56e057f20f883e\""}
+{"level":"INFO","ts":"2022-12-25T19:15:06.399+0800","caller":"services/login.go:16","msg":"req: email:\"wuyinggor@qianhai.com\" password:\"e10adc3949ba59abbe56e057f20f883e\""}
+{"level":"ERROR","ts":"2022-12-25T19:15:06.400+0800","caller":"services/login.go:26","msg":"get user info failed, req: email:\"wuyinggor@qianhai.com\" password:\"e10adc3949ba59abbe56e057f20f883e\""}
+{"level":"INFO","ts":"2022-12-25T19:18:10.241+0800","caller":"grpclog/component.go:36","msg":"[core][Server #1] Server created"}
+{"level":"INFO","ts":"2022-12-25T19:18:10.242+0800","caller":"grpclog/component.go:36","msg":"[core][Server #1 ListenSocket #2] ListenSocket created"}
+{"level":"INFO","ts":"2022-12-25T19:18:17.733+0800","caller":"grpclog/component.go:36","msg":"[core]CPU time info is unavailable on non-linux environments."}
+{"level":"INFO","ts":"2022-12-25T19:18:17.734+0800","caller":"services/login.go:16","msg":"req: email:\"wuyinggor@qianhai.com\" password:\"e10adc3949ba59abbe56e057f20f883e\""}
+{"level":"INFO","ts":"2022-12-25T19:18:53.441+0800","caller":"services/login.go:16","msg":"req: email:\"wuyinggor@qianhai.com\" password:\"e10adc3949ba59abbe56e057f20f883e\""}

@@ -4,9 +4,6 @@ replace github.com/PsychologicalExperiment/backEnd/api/user_info_server => ../..
 
 go 1.16
 
-//replace (
-//	"github.com/PsychologicalExperiment/backEnd/api" => "../../api"
-//)
 
 require (
 	github.com/PsychologicalExperiment/backEnd v0.0.0-20221225100123-0ae180cc4328
