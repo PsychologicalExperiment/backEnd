@@ -43,6 +43,8 @@ message UserInfo{
     UserType user_type = 5;
     // custom user form
     string extra = 6;
+    //user id
+    string uid = 7;
 }
 
 message RegisterReq{

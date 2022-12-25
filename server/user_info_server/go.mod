@@ -9,9 +9,6 @@ go 1.16
 //)
 
 require (
-	github.com/PsychologicalExperiment/backEnd v0.0.0-20221211153046-22431b40e8cf
-	github.com/PsychologicalExperiment/backEnd/api/user_info_server v0.0.0-00010101000000-000000000000
-	github.com/PsychologicalExperiment/backEnd/util v0.0.0-20221211153046-22431b40e8cf
 	github.com/go-redis/redis/v8 v8.11.0
 	google.golang.org/grpc v1.51.0
 	gopkg.in/yaml.v2 v2.4.0
