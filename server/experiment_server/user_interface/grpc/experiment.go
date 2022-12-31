@@ -10,6 +10,7 @@ import (
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/application/dto/command"
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/application/service"
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/user_interface/grpc/assembler"
+	log "google.golang.org/grpc/grpclog"
 )
 
 type ExperimentServiceImpl struct {
@@ -17,12 +18,13 @@ type ExperimentServiceImpl struct {
 	pb.UnimplementedExperimentServiceServer
 }
 
-//  用户接口层用于将pb转换成DTO，然后调用application的service
+// 用户接口层用于将pb转换成DTO，然后调用application的service
 func (e *ExperimentServiceImpl) CreateExperiment(
 	ctx context.Context,
 	req *pb.CreateExperimentReq,
 ) (resp *pb.CreateExperimentResp, err error) {
 	//  初始化dto
+	log.Infof("CreateExperiment request: %v", req)
 	cmd := &command.AddExperimentCmd{}
 	//  转换数据
 	assembler.AssembleAddExperimentCmd(req, cmd)
@@ -55,7 +57,7 @@ func (e *ExperimentServiceImpl) QueryExperiment(
 	}
 
 	fmt.Println("experimentDTO: ", experimentDTO)
-	
+
 	assembler.AssembleQueryExperimentResp(experimentDTO, resp)
 	fmt.Println(resp)
 	return resp, err
@@ -89,7 +91,7 @@ func (e *ExperimentServiceImpl) UpdateExperiment(
 	resp = &pb.UpdateExperimentResp{}
 	assembler.AssembleUpdateExperimentResp(experimentDTO, resp)
 
-	return 
+	return
 }
 
 func (e *ExperimentServiceImpl) CreateSubjectRecord(
@@ -113,7 +115,7 @@ func (e *ExperimentServiceImpl) UpdateSubjectRecord(
 	ctx context.Context,
 	req *pb.UpdateSubjectRecordReq,
 ) (resp *pb.UpdateSubjectRecordResp, err error) {
-	
+
 	cmd := &command.UpdateSubjectRecordCmd{}
 	assembler.AssembleUpdateSubjectRecordCmd(req, cmd)
 
@@ -122,14 +124,14 @@ func (e *ExperimentServiceImpl) UpdateSubjectRecord(
 	resp = &pb.UpdateSubjectRecordResp{}
 	assembler.AssembleUpdateSubjectRecordResp(subjectRecordDTO, resp)
 
-	return 
+	return
 }
 
 func (e *ExperimentServiceImpl) QuerySubjectRecord(
 	ctx context.Context,
 	req *pb.QuerySubjectRecordReq,
 ) (resp *pb.QuerySubjectRecordResp, err error) {
-	
+
 	query := &query.GetSubjectRecordQry{}
 	assembler.AssembleGetSubjectRecordQry(req, query)
 
@@ -137,7 +139,7 @@ func (e *ExperimentServiceImpl) QuerySubjectRecord(
 
 	resp = &pb.QuerySubjectRecordResp{}
 	assembler.AssembleQuerySubjectRecordResp(subjectRecordDTO, resp)
-	
+
 	return
 }
 
@@ -154,5 +156,5 @@ func (e *ExperimentServiceImpl) QuerySubjectRecordList(
 	resp = &pb.QuerySubjectRecordListResp{}
 	assembler.AssembleQuerySubjectRecordListResp(subjectRecordDTOList, resp)
 
-	return 
+	return
 }
