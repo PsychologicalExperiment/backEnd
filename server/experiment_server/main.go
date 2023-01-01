@@ -35,6 +35,7 @@ func main() {
 	enCfg.EncodeTime = zapcore.ISO8601TimeEncoder
 	enCfg.EncodeLevel = zapcore.CapitalLevelEncoder
 	encoder := zapcore.NewJSONEncoder(enCfg)
+	zapcore.NewConsoleEncoder(enCfg)
 	zapWriter := zapcore.AddSync(&lumberjack.Logger{
 		Filename: "/data/log/experiment_server.log",
 	})

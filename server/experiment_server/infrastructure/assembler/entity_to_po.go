@@ -3,9 +3,9 @@ package assembler
 import (
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/domain/entity"
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/infrastructure/persistence/mysql/po"
+	"time"
 )
 
-// 
 func AssembleExperimentPO(experimentEntity *entity.Experiment, experimentPO *po.ExperimentPO) {
 	experimentPO.ID = experimentEntity.ID()
 	experimentPO.ExperimentId = experimentEntity.ExperimentId()
@@ -23,7 +23,8 @@ func AssembleSubjectRecordPO(subjectRecordEntity *entity.SubjectRecord, subjectR
 	subjectRecordPO.ExperimentId = subjectRecordEntity.ExperimentId()
 	subjectRecordPO.ParticipantId = subjectRecordEntity.ParticipantId()
 	subjectRecordPO.State = subjectRecordEntity.State()
-	// subjectRecordPO.FinishTime = subjectRecordEntity.FinishTime()
+	//t, _ := time.ParseInLocation("2006-01-02", subjectRecordEntity.TimeTaken(), time.Local)
+	subjectRecordPO.FinishTime = time.Now()
 }
 
 // func AssembleExperimentEntity(experimentPO *po.ExperimentPO, subjectRecordPOList []*po.SubjectRecordPO) *entity.Experiment {

@@ -5,22 +5,23 @@ import (
 
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/domain/entity"
 	domainport "github.com/PsychologicalExperiment/backEnd/server/experiment_server/domain/port"
+	log "google.golang.org/grpc/grpclog"
 )
 
-//  领域服务
+// 领域服务
 type ExperimentDomainService struct {
 	//  基础层的实现
 	experimentPort domainport.ExperimentPort
 }
 
-//  领域服务初始化
+// 领域服务初始化
 func NewExperimentDomainService(port domainport.ExperimentPort) *ExperimentDomainService {
 	return &ExperimentDomainService{
 		experimentPort: port,
 	}
 }
 
-//  实现业务逻辑
+// 实现业务逻辑
 func (e *ExperimentDomainService) CreateNewExperiment(
 	ctx context.Context,
 	experimentEntity *entity.Experiment,
@@ -50,7 +51,7 @@ func (e *ExperimentDomainService) QueryExperiment(
 	ctx context.Context,
 	id string,
 ) (*entity.Experiment, error) {
-
+	log.Info("queryExperiment, experiment_id: %s", id)
 	experimentEntity, err := e.experimentPort.FindExperiment(ctx, id)
 	if err != nil {
 		return &entity.Experiment{}, err

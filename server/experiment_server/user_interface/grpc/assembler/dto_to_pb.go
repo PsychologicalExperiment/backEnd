@@ -2,11 +2,11 @@ package assembler
 
 import (
 	"fmt"
-
 	commonPb "github.com/PsychologicalExperiment/backEnd/api/api_common"
 	pb "github.com/PsychologicalExperiment/backEnd/api/experiment_server"
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/application/dto"
 	errCode "github.com/PsychologicalExperiment/backEnd/server/experiment_server/common/errorcode"
+	log "google.golang.org/grpc/grpclog"
 )
 
 func AssembleCreateExperimentResp(
@@ -148,6 +148,7 @@ func AssembleQueryExperimentListResp(
 		},
 		ExpInfoList: experiments,
 	}
+	log.Info("QueryExperimentList resp: %v", resp)
 }
 
 func AssembleQueryExperimentListErrResp(
@@ -241,6 +242,7 @@ func AssembleQuerySubjectRecordResp(
 			State:           pb.SubjectRecordState(subjectRecordDTO.State),
 		},
 	}
+	log.Info("QuerySubjectRecord resp: %v", resp)
 }
 
 func AssembleQuerySubjectRecordErrResp(

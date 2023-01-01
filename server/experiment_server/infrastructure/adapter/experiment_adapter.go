@@ -42,23 +42,19 @@ func (e *Experiment) SaveSubjectRecord(
 	subjectRecordDAO.Client().Debug().Save(subjectRecordPO)
 
 	return nil
-}	
+}
 
 func (e *Experiment) UpdateExperiment(
 	ctx context.Context,
 	experimentEntity *entity.Experiment,
 ) (err error) {
-	
+
 	experimentPO := &po.ExperimentPO{}
 	assembler.AssembleExperimentPO(experimentEntity, experimentPO)
 
 	experimentDAO := new(dao.ExperimentDao)
-	// _ = new(dao.ExperimentDao)
-	// experimentDAO.Client()
-	experimentDAO.Client().Debug().Save(experimentPO)
 	experimentDAO.Client().Debug().Model(experimentPO).Where("researcher_id", experimentPO.ResearcherId).
-				Omit("created_at", "researcher_id").Updates(experimentPO)
-					
+		Omit("created_at", "researcher_id").Updates(experimentPO)
 
 	return nil
 }
@@ -72,12 +68,8 @@ func (e *Experiment) UpdateSubjectRecord(
 	assembler.AssembleSubjectRecordPO(record, subjectRecordPO)
 
 	subjectRecordDAO := new(dao.SubjectRecordDAO)
-	// _ = new(dao.ExperimentDao)
-	// experimentDAO.Client()
-	subjectRecordDAO.Client().Debug().Save(subjectRecordPO)
 	subjectRecordDAO.Client().Debug().Model(subjectRecordPO).Where("participant_id", subjectRecordPO.ParticipantId).
-				Omit("created_at", "researcher_id").Update("state", subjectRecordPO.State)
-					
+		Omit("created_at", "researcher_id").Update("state", subjectRecordPO.State)
 
 	return nil
 }
@@ -123,7 +115,6 @@ func (e *Experiment) FindExperimentsByResearcherID(
 	return experimentEntityList, int32(len(experimentPOList)), nil
 }
 
-
 func (e *Experiment) FindSubjectRecord(
 	ctx context.Context,
 	id string,
@@ -133,7 +124,6 @@ func (e *Experiment) FindSubjectRecord(
 	subjectRecordDAO := new(dao.SubjectRecordDAO)
 	subjectRecordDAO.Client().Debug().Where("subject_record_id = ?", id).Take(subjectRecordPO)
 
-
 	subjectRecordEntity := assembler.AssembleSubjectRecordEntity(subjectRecordPO)
 
 	return subjectRecordEntity, nil
@@ -141,9 +131,9 @@ func (e *Experiment) FindSubjectRecord(
 }
 
 func (e *Experiment) FindSubjectRecordsByExpID(
-	ctx context.Context, 
-	id string, 
-	page int32, 
+	ctx context.Context,
+	id string,
+	page int32,
 	size int32,
 ) ([]*entity.SubjectRecord, int32, error) {
 

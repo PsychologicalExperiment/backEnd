@@ -1,8 +1,6 @@
 package po
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 )
 
@@ -15,7 +13,6 @@ type ExperimentPO struct {
 	ExperimentTime int32  `gorm:"no null"`
 	ParticipantNum int32  `gorm:"no null"`
 	State          int32
-	DeletedAt      time.Time
 }
 
 func (s *ExperimentPO) TableName() string {

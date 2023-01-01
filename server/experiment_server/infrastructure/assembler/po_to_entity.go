@@ -3,10 +3,11 @@ package assembler
 import (
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/domain/entity"
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/infrastructure/persistence/mysql/po"
+	log "google.golang.org/grpc/grpclog"
 )
 
 func AssembleExperimentEntity(
-	experimentPO *po.ExperimentPO, 
+	experimentPO *po.ExperimentPO,
 	subjectRecordPOList []*po.SubjectRecordPO,
 ) *entity.Experiment {
 	var subjectRecords []*entity.SubjectRecord
@@ -25,13 +26,16 @@ func AssembleExperimentEntity(
 		Description(experimentPO.Description).
 		ResearcherId(experimentPO.ResearcherId).
 		ExperimentTime(experimentPO.ExperimentTime).
-		ParticipantNum(experimentPO.ParticipantNum)
+		ParticipantNum(experimentPO.ParticipantNum).
+		CreateTime(experimentPO.CreatedAt.Format("2006-01-02 15:04:05")).
+		UpdateTime(experimentPO.UpdatedAt.Format("2006-01-02 15:04:05"))
 	return experimentBuilder.Build()
 }
 
 func AssembleSubjectRecordEntity(
 	subjectRecordPO *po.SubjectRecordPO,
 ) *entity.SubjectRecord {
+	log.Infof("subjectRecordPO: %+v", subjectRecordPO)
 	subjectRecordBuilder := &entity.SubjectRecordBuilder{}
 	subjectRecordBuilder.ExperimentID(subjectRecordPO.ExperimentId).
 		ParticipantId(subjectRecordPO.ParticipantId).

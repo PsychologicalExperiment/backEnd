@@ -1,8 +1,8 @@
 package service
 
 import (
-	"fmt"
 	"context"
+	"fmt"
 
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/domain/entity"
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/domain/service"
@@ -12,14 +12,15 @@ import (
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/application/dto/command"
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/application/dto/query"
 	errCode "github.com/PsychologicalExperiment/backEnd/server/experiment_server/common/errorcode"
+	log "google.golang.org/grpc/grpclog"
 )
 
-//  application依赖domain的Port
+// application依赖domain的Port
 type ApplicationService struct {
 	ExperimentDomainSvr *service.ExperimentDomainService
 }
 
-//  创建新实验，实现业务逻辑
+// 创建新实验，实现业务逻辑
 func (a *ApplicationService) CreateExperiment(
 	ctx context.Context,
 	cmd *command.AddExperimentCmd,
@@ -75,7 +76,7 @@ func (a *ApplicationService) QueryExperimentList(
 	}
 
 	experimentEntityList, _, err := a.ExperimentDomainSvr.QueryExperimentList(ctx, query.ResearcherId,
-						query.PageIndex, query.PageSize)
+		query.PageIndex, query.PageSize)
 	if err != nil {
 		return nil, errCode.New(errCode.ErrQueryRecordNotFound)
 	}
@@ -126,14 +127,14 @@ func (a *ApplicationService) CreateSubjectRecord(
 
 	builder := entity.SubjectRecordBuilder{}
 	subjectRecordEntity := builder.ExperimentID(cmd.ExperimentId).
-						ParticipantId(cmd.ParticipantId).
-						Build()
+		ParticipantId(cmd.ParticipantId).
+		Build()
 
 	a.ExperimentDomainSvr.CreateNewSubjectRecord(ctx, subjectRecordEntity)
 
 	subjectRecordDTO := &dto.SubjectRecordDTO{}
 	println("subjectRecordEntity:%v", subjectRecordEntity)
-	assembler.AssembleSubjectRecordDTO(subjectRecordEntity, subjectRecordDTO)		
+	assembler.AssembleSubjectRecordDTO(subjectRecordEntity, subjectRecordDTO)
 	println("experimentDTO:%v", subjectRecordDTO)
 	return subjectRecordDTO, nil
 }
@@ -149,8 +150,8 @@ func (a *ApplicationService) UpdateSubjectRecord(
 
 	builder := entity.SubjectRecordBuilder{}
 	subjectRecordEntity := builder.SubjectRecordID(cmd.SubjectRecordId).
-							State(cmd.State).Build()
-	
+		State(cmd.State).ParticipantId(cmd.UserId).Build()
+
 	a.ExperimentDomainSvr.UpdateSubjectRecord(ctx, subjectRecordEntity)
 
 	subjectRecordDTO := &dto.SubjectRecordDTO{}
@@ -169,13 +170,13 @@ func (a *ApplicationService) QuerySubjectRecord(
 	}
 
 	subjectRecordEntity, _ := a.ExperimentDomainSvr.QuerySubjectRecord(ctx, query.SubjectRecordId)
+	log.Info("subjectRecordEntity: %v", subjectRecordEntity)
 	subjectRecordDTO := &dto.SubjectRecordDTO{}
 	assembler.AssembleSubjectRecordDTO(subjectRecordEntity, subjectRecordDTO)
 
 	return subjectRecordDTO, nil
 }
 
-//  
 func (a *ApplicationService) QuerySubjectRecordList(
 	ctx context.Context,
 	query *query.GetSubjectRecordListQry,

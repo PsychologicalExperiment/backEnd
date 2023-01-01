@@ -82,7 +82,7 @@ func (e *ExperimentServiceImpl) UpdateExperiment(
 	ctx context.Context,
 	req *pb.UpdateExperimentReq,
 ) (resp *pb.UpdateExperimentResp, err error) {
-
+	log.Info("UpdateExperiment: ", req)
 	cmd := &command.UpdateExperimentCmd{}
 	assembler.AssembleUpdateExperimentCmd(req, cmd)
 
@@ -115,7 +115,7 @@ func (e *ExperimentServiceImpl) UpdateSubjectRecord(
 	ctx context.Context,
 	req *pb.UpdateSubjectRecordReq,
 ) (resp *pb.UpdateSubjectRecordResp, err error) {
-
+	log.Info("UpdateExperiment: ", req)
 	cmd := &command.UpdateSubjectRecordCmd{}
 	assembler.AssembleUpdateSubjectRecordCmd(req, cmd)
 
@@ -138,6 +138,7 @@ func (e *ExperimentServiceImpl) QuerySubjectRecord(
 	subjectRecordDTO, err := e.ApplicationService.QuerySubjectRecord(ctx, query)
 
 	resp = &pb.QuerySubjectRecordResp{}
+	log.Info("subjectRecordDTO: %v", subjectRecordDTO)
 	assembler.AssembleQuerySubjectRecordResp(subjectRecordDTO, resp)
 
 	return
