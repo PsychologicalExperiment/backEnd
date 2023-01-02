@@ -89,16 +89,17 @@ func AssembleQueryExperimentResp(
 			Msg:  "ok",
 		},
 		ExpInfo: &pb.ExperimentInfo{
-			ExperimentId:      experimentDTO.ExperimentId,
-			Title:             experimentDTO.Title,
-			Description:       experimentDTO.Description,
-			ResearcherId:      experimentDTO.ResearcherId,
-			ExperimentTime:    experimentDTO.ExperimentTime,
-			ParticipantNum:    experimentDTO.ParticipantNum,
-			State:             pb.ExperimentState(experimentDTO.State),
-			CreateTime:        experimentDTO.CreateTime,
-			UpdateTime:        experimentDTO.UpdateTime,
-			SubjectRecordsNum: experimentDTO.SubjectRecordNum,
+			ExperimentId:   experimentDTO.ExperimentId,
+			Title:          experimentDTO.Title,
+			Description:    experimentDTO.Description,
+			ResearcherId:   experimentDTO.ResearcherId,
+			ExperimentTime: experimentDTO.ExperimentTime,
+			ParticipantNum: experimentDTO.ParticipantNum,
+			State:          pb.ExperimentState(experimentDTO.State),
+			CreateTime:     experimentDTO.CreateTime,
+			UpdateTime:     experimentDTO.UpdateTime,
+			//SubjectRecordsNum: experimentDTO.SubjectRecordNum,
+			SubjectRecordsNum: 1,
 		},
 		SubjectRecords: subjectRecords,
 	}
@@ -128,16 +129,18 @@ func AssembleQueryExperimentListResp(
 	var experiments []*pb.ExperimentInfo
 	for _, v := range experimentDTOList {
 		tmp := &pb.ExperimentInfo{
-			ExperimentId:      v.ExperimentId,
-			Title:             v.Title,
-			Description:       v.Description,
-			ResearcherId:      v.ResearcherId,
-			ExperimentTime:    v.ExperimentTime,
-			ParticipantNum:    v.ParticipantNum,
-			State:             pb.ExperimentState(v.State),
-			CreateTime:        v.CreateTime,
-			UpdateTime:        v.UpdateTime,
-			SubjectRecordsNum: v.SubjectRecordNum,
+			ExperimentId:   v.ExperimentId,
+			Title:          v.Title,
+			Description:    v.Description,
+			ResearcherId:   v.ResearcherId,
+			ExperimentTime: v.ExperimentTime,
+			ParticipantNum: v.ParticipantNum,
+			//State:          pb.ExperimentState(v.State),
+			State:      pb.ExperimentState_EXP_PUBLISHED,
+			CreateTime: v.CreateTime,
+			UpdateTime: v.UpdateTime,
+			//SubjectRecordsNum: v.SubjectRecordNum,
+			SubjectRecordsNum: 1,
 		}
 		experiments = append(experiments, tmp)
 	}
@@ -146,6 +149,7 @@ func AssembleQueryExperimentListResp(
 			Code: uint32(errCode.OKCode),
 			Msg:  "ok",
 		},
+		TotalNum:    0,
 		ExpInfoList: experiments,
 	}
 	log.Info("QueryExperimentList resp: %v", resp)
@@ -180,7 +184,7 @@ func AssembleCreateSubjectRecordResp(
 	}
 }
 
-func AssembleCreateSUbjectRecordErrResp(
+func AssembleCreateSubjectRecordErrResp(
 	err error,
 	resp *pb.CreateSubjectRecordResp,
 ) {

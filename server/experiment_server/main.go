@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"github.com/grpc-ecosystem/go-grpc-middleware"
@@ -12,9 +13,11 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"google.golang.org/grpc/credentials/insecure"
 	"net"
 	"net/http"
 
+	namingserver "github.com/PsychologicalExperiment/backEnd/api/eason"
 	pb "github.com/PsychologicalExperiment/backEnd/api/experiment_server"
 	applicationservice "github.com/PsychologicalExperiment/backEnd/server/experiment_server/application/service"
 	domainservice "github.com/PsychologicalExperiment/backEnd/server/experiment_server/domain/service"
@@ -67,7 +70,28 @@ func main() {
 		)),
 	)
 	log.Infof("server start")
-
+	nconn, err := grpc.Dial("159.75.15.177:8001", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	defer func() {
+		if err := nconn.Close(); err != nil {
+			log.Error(err)
+		}
+	}()
+	if err != nil {
+		log.Error("naming-service error: ", err)
+	}
+	namingcli := namingserver.NewEasonNamingServiceClient(nconn)
+	req := &namingserver.RegisterServerReq{
+		Namespace: "eason",
+		SvrName:   "experiment_server",
+		Addr:      "159.75.15.177",
+	}
+	resp, err := namingcli.RegisterServer(context.Background(), req)
+	if err != nil {
+		log.Error("register server error: ", err)
+	}
+	if resp.Code != 0 {
+		log.Error("register server error: ", resp.Msg)
+	}
 	appService := &applicationservice.ApplicationService{
 		ExperimentDomainSvr: domainservice.NewExperimentDomainService(&infrastructureadapter.Experiment{}),
 	}
