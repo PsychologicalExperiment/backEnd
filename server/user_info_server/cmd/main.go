@@ -17,8 +17,6 @@ import (
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
 	log "google.golang.org/grpc/grpclog"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 	"net"
 	"net/http"
 )
@@ -50,10 +48,6 @@ func main() {
 			promhttp.HandlerOpts{}),
 		Addr: fmt.Sprintf("0.0.0.0:%d", 9093),
 	}
-	// 设置数据库连接
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		util.GConfig.SqlConfig.User, util.GConfig.SqlConfig.Password, util.GConfig.SqlConfig.Ip, util.GConfig.SqlConfig.Port, util.GConfig.SqlConfig.DbName)
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	lis, err := net.Listen("tcp", "127.0.0.1:50051")
 	if err != nil {
@@ -75,7 +69,7 @@ func main() {
 	)
 
 	// server服务注册
-	userInfoPb.RegisterUserServiceServer(s, userInfo.NewUserInfoServerImpl(db))
+	userInfoPb.RegisterUserServiceServer(s, userInfo.NewUserInfoServerImpl())
 	grpc_prometheus.DefaultServerMetrics.InitializeMetrics(s)
 	go func() {
 		if err := httpServer.ListenAndServe(); err != nil {
