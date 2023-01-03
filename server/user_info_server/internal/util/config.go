@@ -9,6 +9,7 @@ import (
 
 type Config struct {
 	SqlConfig       MySqlConf            `yaml:"MySqlConf"`
+	SlaveConfig     MySqlConf            `yaml:"SlaveConf"`
 	TokenSecretKey  string               `yaml:"tokenSecretKey"`
 	TokenExpireHour int                  `yaml:"tokenExpireHour"`
 	LoggerConfig    plugins.LoggerConfig `yaml:"LoggerConfig"`

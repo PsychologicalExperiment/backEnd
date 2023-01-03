@@ -25,7 +25,7 @@ func (e *Experiment) SaveExperiment(
 	experimentDAO := new(dao.ExperimentDao)
 	// _ = new(dao.ExperimentDao)
 	// experimentDAO.Client()
-	experimentDAO.Client().Debug().Save(experimentPO)
+	experimentDAO.WriteClient().Debug().Save(experimentPO)
 
 	return nil
 }
@@ -39,7 +39,7 @@ func (e *Experiment) SaveSubjectRecord(
 	assembler.AssembleSubjectRecordPO(record, subjectRecordPO)
 
 	subjectRecordDAO := new(dao.SubjectRecordDAO)
-	subjectRecordDAO.Client().Debug().Save(subjectRecordPO)
+	subjectRecordDAO.WriteClient().Debug().Save(subjectRecordPO)
 
 	return nil
 }
@@ -53,7 +53,7 @@ func (e *Experiment) UpdateExperiment(
 	assembler.AssembleExperimentPO(experimentEntity, experimentPO)
 
 	experimentDAO := new(dao.ExperimentDao)
-	experimentDAO.Client().Debug().Model(experimentPO).Where("researcher_id", experimentPO.ResearcherId).
+	experimentDAO.WriteClient().Debug().Model(experimentPO).Where("researcher_id", experimentPO.ResearcherId).
 		Omit("created_at", "researcher_id").Updates(experimentPO)
 
 	return nil
@@ -68,7 +68,7 @@ func (e *Experiment) UpdateSubjectRecord(
 	assembler.AssembleSubjectRecordPO(record, subjectRecordPO)
 
 	subjectRecordDAO := new(dao.SubjectRecordDAO)
-	subjectRecordDAO.Client().Debug().Model(subjectRecordPO).Where("participant_id", subjectRecordPO.ParticipantId).
+	subjectRecordDAO.WriteClient().Debug().Model(subjectRecordPO).Where("participant_id", subjectRecordPO.ParticipantId).
 		Omit("created_at", "researcher_id").Update("state", subjectRecordPO.State)
 
 	return nil
@@ -81,13 +81,13 @@ func (e *Experiment) FindExperiment(
 
 	experimentPO := &po.ExperimentPO{}
 	experimentDAO := new(dao.ExperimentDao)
-	experimentDAO.Client().Debug().Where("experiment_id = ?", exp_id).Take(experimentPO)
+	experimentDAO.ReadClient().Debug().Where("experiment_id = ?", exp_id).Take(experimentPO)
 
 	subjectRecordPOList := []*po.SubjectRecordPO{}
 	// var subjectRecordPOList []po.SubjectRecordPO
 	// subjectRecordPOList := []&po.SubjectRecordPO{}
 	subjectRecordDAO := new(dao.SubjectRecordDAO)
-	subjectRecordDAO.Client().Debug().Where("experiment_id = ?", exp_id).Find(&subjectRecordPOList)
+	subjectRecordDAO.ReadClient().Debug().Where("experiment_id = ?", exp_id).Find(&subjectRecordPOList)
 
 	experimentEntity := assembler.AssembleExperimentEntity(experimentPO, subjectRecordPOList)
 
@@ -104,7 +104,7 @@ func (e *Experiment) FindExperimentsByResearcherID(
 
 	experimentPOList := []*po.ExperimentPO{}
 	experimentDAO := new(dao.ExperimentDao)
-	experimentDAO.Client().Debug().Offset(int(page*size)).Limit(int(size)).Where("researcher_id = ?", id).Find(&experimentPOList)
+	experimentDAO.ReadClient().Debug().Offset(int(page*size)).Limit(int(size)).Where("researcher_id = ?", id).Find(&experimentPOList)
 
 	var experimentEntityList []*entity.Experiment
 	for _, v := range experimentPOList {
@@ -122,7 +122,7 @@ func (e *Experiment) FindSubjectRecord(
 
 	subjectRecordPO := &po.SubjectRecordPO{}
 	subjectRecordDAO := new(dao.SubjectRecordDAO)
-	subjectRecordDAO.Client().Debug().Where("subject_record_id = ?", id).Take(subjectRecordPO)
+	subjectRecordDAO.ReadClient().Debug().Where("subject_record_id = ?", id).Take(subjectRecordPO)
 
 	subjectRecordEntity := assembler.AssembleSubjectRecordEntity(subjectRecordPO)
 
@@ -139,7 +139,7 @@ func (e *Experiment) FindSubjectRecordsByExpID(
 
 	subjectRecordPOList := []*po.SubjectRecordPO{}
 	subjectRecordDAO := new(dao.SubjectRecordDAO)
-	subjectRecordDAO.Client().Debug().Offset(int(page*size)).Limit(int(size)).Where("experiment_id = ?", id).Find(&subjectRecordPOList)
+	subjectRecordDAO.ReadClient().Debug().Offset(int(page*size)).Limit(int(size)).Where("experiment_id = ?", id).Find(&subjectRecordPOList)
 
 	var subjectRecordEntityList []*entity.SubjectRecord
 	for _, v := range subjectRecordPOList {

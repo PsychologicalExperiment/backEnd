@@ -3,10 +3,12 @@ package services
 import (
 	"context"
 	"fmt"
+	"github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/util"
 	"github.com/go-redis/redis/v8"
 
 	"github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/services/serverErr"
 	"google.golang.org/grpc/grpclog"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -16,13 +18,26 @@ const (
 )
 
 type UserInfoServerImpl struct {
-	sqlConn  *gorm.DB
-	redisCli *redis.Client
+	writeConn *gorm.DB
+	readConn  *gorm.DB
+	redisCli  *redis.Client
 }
 
-func NewUserInfoServerImpl(db *gorm.DB) *UserInfoServerImpl {
+func NewUserInfoServerImpl() *UserInfoServerImpl {
 	//return &UserInfoServerImpl{db.Table("user_info"), nil}
-	return &UserInfoServerImpl{db, nil}
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		util.GConfig.SqlConfig.User, util.GConfig.SqlConfig.Password, util.GConfig.SqlConfig.Ip, util.GConfig.SqlConfig.Port, util.GConfig.SqlConfig.DbName)
+	writeDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		grpclog.Fatal(err)
+	}
+	dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		util.GConfig.SlaveConfig.User, util.GConfig.SlaveConfig.Password, util.GConfig.SlaveConfig.Ip, util.GConfig.SlaveConfig.Port, util.GConfig.SlaveConfig.DbName)
+	readDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		grpclog.Fatal(err)
+	}
+	return &UserInfoServerImpl{writeDB, readDB, nil}
 }
 
 type userInfo struct {
@@ -39,7 +54,7 @@ type userInfo struct {
 func (u *UserInfoServerImpl) insertUserInfo(
 	user *userInfo,
 ) error {
-	res := u.sqlConn.Debug().Create(user)
+	res := u.writeConn.Debug().Create(user)
 	if res.Error != nil {
 		grpclog.Errorf("insert into db failed, error: %+v, userInfo: %+v", res.Error, user)
 		return serverErr.New(serverErr.ErrMySqlError)
@@ -51,7 +66,7 @@ func (u *UserInfoServerImpl) isUinqueKeyUsed(
 	uniqueKey, queryKey string,
 ) (bool, error) {
 	users := []userInfo{}
-	res := u.sqlConn.Where(fmt.Sprintf("%s = ?", queryKey), uniqueKey).Find(&users)
+	res := u.readConn.Where(fmt.Sprintf("%s = ?", queryKey), uniqueKey).Find(&users)
 	if res.Error != nil {
 		grpclog.Errorf("read db failed, error: %+v", res.Error)
 		return false, serverErr.New(serverErr.ErrMySqlError)
@@ -63,7 +78,7 @@ func (u *UserInfoServerImpl) getUserInfosByKey(
 	queryKey, queryVal string,
 ) ([]userInfo, error) {
 	users := []userInfo{}
-	res := u.sqlConn.Table("user_info").Where(fmt.Sprintf("%s = ?", queryKey), queryVal).Debug().Find(&users)
+	res := u.readConn.Table("user_info").Where(fmt.Sprintf("%s = ?", queryKey), queryVal).Debug().Find(&users)
 	//res := u.sqlConn.Where(fmt.Sprintf("%s = ?", queryKey), queryVal).Debug().Find(&users)
 	//_ = u.sqlConn.Where(fmt.Sprintf("%s = ?", queryKey), queryVal).Debug().Find(&users)
 	if res.Error != nil {

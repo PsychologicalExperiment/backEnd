@@ -5,8 +5,14 @@ LoggerConfig:
   max_age: 7
   max_backups: 100
   local_time: true
-MySqlConf:
+MySqlConf: # 主
   ip: 118.195.204.214
+  port: 3306
+  user: root
+  password: qianhaiwaibao
+  dbName: psychological_experiment
+SlaveConf:
+  ip: 159.75.15.177
   port: 3306
   user: root
   password: qianhaiwaibao

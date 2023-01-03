@@ -9,8 +9,9 @@ import (
 )
 
 var (
-	once sync.Once
-	expDB *gorm.DB
+	once    sync.Once
+	writeDB *gorm.DB
+	readDB  *gorm.DB
 )
 
 type ExperimentDao struct {
@@ -21,15 +22,16 @@ func (e *ExperimentDao) TableName() string {
 	return "experiment_info"
 }
 
-func (e *ExperimentDao) Client() *gorm.DB {
+// WriteClient 写主机
+func (e *ExperimentDao) WriteClient() *gorm.DB {
 	once.Do(func() {
-		dsn := "root:qianhaiwaibao@tcp(127.0.0.1:3306)/psychological_experiment?charset=utf8mb4&parseTime=True&loc=Local"
+		dsn := "root:qianhaiwaibao@tcp(118.195.204.214:3306)/psychological_experiment?charset=utf8mb4&parseTime=True&loc=Local"
 		db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 		if err != nil {
 			println("db error!")
 			return
 		}
-		expDB = db.Table(e.TableName())
+		writeDB = db.Table(e.TableName())
 		// expDB = expDB
 	})
 	// dsn := "root:qianhaiwaibao@tcp(127.0.0.1:3306)/psychological_experiment?charset=utf8mb4&parseTime=True&loc=Local"
@@ -39,5 +41,19 @@ func (e *ExperimentDao) Client() *gorm.DB {
 	// 	return &gorm.DB{}
 	// }
 	// expDB = expDB.Table(e.experimentPO.TableName())
-	return expDB
+	return writeDB
+}
+
+// ReadClient 读备机
+func (e *ExperimentDao) ReadClient() *gorm.DB {
+	once.Do(func() {
+		dsn := "root:qianhaiwaibao@tcp(159.75.15.177:3306)/psychological_experiment?charset=utf8mb4&parseTime=True&loc=Local"
+		db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		if err != nil {
+			println("db error!")
+			return
+		}
+		readDB = db.Table(e.TableName())
+	})
+	return readDB
 }
