@@ -1,49 +1,33 @@
 package etcd
 
 import (
-	etcdresolver "go.etcd.io/etcd/client/v3/naming/resolver"
+	"fmt"
+	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc/resolver"
 )
 
-type etcdResolver struct {
-	//conn resolver.ClientConn
+type etcdBuilder struct {
+	Client *clientv3.Client
 }
 
-// NewResolver initialzie an etcd client
-func NewResolver() resolver.Builder {
-	if cli != nil {
-		_, err := GetEtcdClient()
-		if err != nil {
-			return nil
-		}
-	}
-	c, err := etcdresolver.NewBuilder(cli)
-	if err != nil {
-		return nil
-	}
-	return c
+func (s etcdBuilder) Scheme() string {
+	return "etcd"
 }
 
-//func (s etcdResolver) Scheme() string {
-//	return "eason"
-//}
+func (s *etcdBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
+	prefix := fmt.Sprintf("/%s/", target.URL.Path)
+	r := &Resolver{
+		Client: s.Client,
+		cc: cc,
+		prefix: prefix,
+	}
+	go func() {
+		r.watcher()
+	}()
+	r.ResolveNow(resolver.ResolveNowOptions{})
+	return r, nil
+}
 
-//func (s *etcdResolver) Build(target resolver.Target, conn resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
-//	if cli != nil {
-//		_, err := GetEtcdClient()
-//		if err != nil {
-//			return nil, err
-//		}
-//	}
-//	c, err := etcdresolver.NewBuilder(cli)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	go s.watch(fmt.Sprintf("/eason/%s/", target.URL.Path))
-//	return c, nil
-//}
-//
 //func (s *etcdResolver) ResolveNow(rn resolver.ResolveNowOptions) {
 //	// TODO: do something
 //	return
