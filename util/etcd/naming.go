@@ -50,5 +50,5 @@ func GetLocalIP() (string, error) {
 		}
 	}
 
-	return "", errors.New("unable to determine local ip")
+	return "", fmt.Errorf("get ip error")
 }
