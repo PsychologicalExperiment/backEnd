@@ -5,10 +5,10 @@ import (
 	"flag"
 	"fmt"
 	"github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpczap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	grpcprometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
@@ -17,12 +17,12 @@ import (
 	"net"
 	"net/http"
 
-	namingserver "github.com/PsychologicalExperiment/backEnd/api/eason"
 	pb "github.com/PsychologicalExperiment/backEnd/api/experiment_server"
 	applicationservice "github.com/PsychologicalExperiment/backEnd/server/experiment_server/application/service"
 	domainservice "github.com/PsychologicalExperiment/backEnd/server/experiment_server/domain/service"
 	infrastructureadapter "github.com/PsychologicalExperiment/backEnd/server/experiment_server/infrastructure/adapter"
 	grpcinterface "github.com/PsychologicalExperiment/backEnd/server/experiment_server/user_interface/grpc"
+	"github.com/PsychologicalExperiment/backEnd/util/etcd"
 	"github.com/natefinch/lumberjack"
 	"google.golang.org/grpc"
 	log "google.golang.org/grpc/grpclog"
@@ -50,7 +50,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	grpc_zap.ReplaceGrpcLoggerV2(logger)
+	grpczap.ReplaceGrpcLoggerV2(logger)
 	// 设置监控
 	httpServer := &http.Server{
 		Handler: promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{}), Addr: fmt.Sprintf("0.0.0.0:%d", 9092),
@@ -59,14 +59,14 @@ func main() {
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
 			grpc_ctxtags.StreamServerInterceptor(),
 			grpc_recovery.StreamServerInterceptor(),
-			grpc_zap.StreamServerInterceptor(logger),
-			grpc_prometheus.StreamServerInterceptor,
+			grpczap.StreamServerInterceptor(logger),
+			grpcprometheus.StreamServerInterceptor,
 		)),
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 			grpc_ctxtags.UnaryServerInterceptor(),
 			grpc_recovery.UnaryServerInterceptor(),
-			grpc_zap.UnaryServerInterceptor(logger),
-			grpc_prometheus.UnaryServerInterceptor,
+			grpczap.UnaryServerInterceptor(logger),
+			grpcprometheus.UnaryServerInterceptor,
 		)),
 	)
 	log.Infof("server start")
@@ -79,19 +79,28 @@ func main() {
 	if err != nil {
 		log.Error("naming-service error: ", err)
 	}
-	namingcli := namingserver.NewEasonNamingServiceClient(nconn)
-	req := &namingserver.RegisterServerReq{
-		Namespace: "eason",
-		SvrName:   "experiment_server",
-		Addr:      "159.75.15.177",
-	}
-	resp, err := namingcli.RegisterServer(context.Background(), req)
+	//namingcli := namingserver.NewEasonNamingServiceClient(nconn)
+	ip, err := etcd.GetLocalIP()
 	if err != nil {
-		log.Error("register server error: ", err)
+		log.Fatal(err)
 	}
-	if resp.Code != 0 {
-		log.Error("register server error: ", resp.Msg)
+	if err := etcd.EtcdRegisterServer(context.Background(),
+			"experiment_server", fmt.Sprintf("%s:%d", ip, port), 10); err != nil {
+		log.Errorf("register server error: %+v", err)
+		log.Fatal(err)
 	}
+	//req := &namingserver.RegisterServerReq{
+	//	Namespace: "etcd",
+	//	SvrName:   "experiment_server",
+	//	Addr:      fmt.Sprintf("%s:%d", ip, port),
+	//}
+	//resp, err := namingcli.RegisterServer(context.Background(), req)
+	//if err != nil {
+	//	log.Error("register server error: ", err)
+	//}
+	//if resp.Code != 0 {
+	//	log.Error("register server error: ", resp.Msg)
+	//}
 	appService := &applicationservice.ApplicationService{
 		ExperimentDomainSvr: domainservice.NewExperimentDomainService(&infrastructureadapter.Experiment{}),
 	}
@@ -100,7 +109,7 @@ func main() {
 		ApplicationService: appService,
 	}
 	pb.RegisterExperimentServiceServer(s, grpcService)
-	grpc_prometheus.DefaultServerMetrics.InitializeMetrics(s)
+	grpcprometheus.DefaultServerMetrics.InitializeMetrics(s)
 	go func() {
 		if err := httpServer.ListenAndServe(); err != nil {
 			log.Fatal("start prometheus server error")
