@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	clientv3 "go.etcd.io/etcd/client/v3"
+	"net"
 )
 
 func EtcdRegisterServer(ctx context.Context, server, addr string, ttl int64) error {
@@ -31,4 +32,23 @@ func EtcdRegisterServer(ctx context.Context, server, addr string, ttl int64) err
 		}
 	}()
 	return nil
+}
+
+// GetLocalIP 获取本地ip
+func GetLocalIP() (string, error) {
+	addrs, err := net.InterfaceAddrs()
+
+	if err != nil {
+		return "", err
+	}
+
+	for _, addr := range addrs {
+		if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				return ipnet.IP.String(), nil
+			}
+		}
+	}
+
+	return "", errors.New("unable to determine local ip")
 }
