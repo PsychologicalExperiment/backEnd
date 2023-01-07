@@ -4,12 +4,12 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'make build'
+                sh 'cd server/experiment_server && make build'
             }
         }
         stage('deploy') {
             steps {
-                sh 'make deploy'
+                sh 'cd server/experiment_server && make deploy'
             }
         }
     }
