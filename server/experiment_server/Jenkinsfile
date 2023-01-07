@@ -1,6 +1,6 @@
 // Jenkinsfile (Declarative Pipeline)
 pipeline {
-    agent { docker 'golang:1.6' }
+    agent { docker 'golang:1.16' }
     stages {
         stage('build') {
             steps {
