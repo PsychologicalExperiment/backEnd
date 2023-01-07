@@ -24,7 +24,7 @@ define compile_and_pack
 	@mkdir -p ${TARGET_CONF}
 	@mkdir -p ${TARGET_LOG}
 	$(GOBUILD) -o ${TARGET_BIN}/$(NAME) -ldflags "${FLAGS}" ${BASE_DIR}/cmd/main.go
-	cp -rf ${BASE_DIR}/configs/* ${TARGET_CONF}
+	cp -rf ${BASE_DIR}/configs/* ${ffile}
 endef
 
 all:

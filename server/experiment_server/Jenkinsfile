@@ -1,10 +1,15 @@
 // Jenkinsfile (Declarative Pipeline)
 pipeline {
-    agent { docker 'grpc/go:1.0' }
+    agent { docker 'golang:1.6' }
     stages {
         stage('build') {
             steps {
-                sh 'go version'
+                sh 'make build'
+            }
+        }
+        stage('deploy') {
+            steps {
+                sh 'make deploy'
             }
         }
     }

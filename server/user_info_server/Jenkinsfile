@@ -1,0 +1,12 @@
+pipeline {
+    agent {docker 'grpc/go:1.0'}
+    stages {
+        stage('build') {
+            steps {
+                sh 'go version'
+                scp relase.tar xxxx
+
+            }
+        }
+    }
+}
