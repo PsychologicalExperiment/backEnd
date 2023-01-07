@@ -1,6 +1,5 @@
 Jenkinsfile (Declarative Pipeline)
 pipeline {
-    agent { docker 'grpc/go:1.0' }
     stages {
         stage('build') {
             steps {
