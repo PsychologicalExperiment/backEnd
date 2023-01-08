@@ -1,5 +1,6 @@
 APP=experiment_server
 build:
+	export GOPROXY=https://mirrors.aliyun.com/goproxy/
 	go mod tidy
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/${APP} main.go
 

@@ -4,7 +4,6 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'go env -w https://mirrors.aliyun.com/goproxy/'
                 sh 'cd server/experiment_server && make build'
             }
         }
