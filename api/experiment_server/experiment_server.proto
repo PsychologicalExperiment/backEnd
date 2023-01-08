@@ -102,8 +102,9 @@ message QueryExperimentListReq {
     string request_id = 1;
     string researcher_id = 2; // 主试id
     int32 page_index = 3;  
-    int32 page_size = 4;   
-
+    int32 page_size = 4;
+    int64 start_time = 5;
+    int64 end_time = 6;
 }
 
 message QueryExperimentListResp {
