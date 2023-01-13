@@ -7,7 +7,6 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	grpczap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	"github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpcprometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -57,15 +56,15 @@ func main() {
 	}
 	s := grpc.NewServer(
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
-			grpc_ctxtags.StreamServerInterceptor(),
+			//grpc_ctxtags.StreamServerInterceptor(),
 			grpc_recovery.StreamServerInterceptor(),
-			grpczap.StreamServerInterceptor(logger),
+			//grpczap.StreamServerInterceptor(logger),
 			grpcprometheus.StreamServerInterceptor,
 		)),
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-			grpc_ctxtags.UnaryServerInterceptor(),
+			//grpc_ctxtags.UnaryServerInterceptor(),
 			grpc_recovery.UnaryServerInterceptor(),
-			grpczap.UnaryServerInterceptor(logger),
+			//grpczap.UnaryServerInterceptor(logger),
 			grpcprometheus.UnaryServerInterceptor,
 		)),
 	)
@@ -89,18 +88,6 @@ func main() {
 		log.Errorf("register server error: %+v", err)
 		log.Fatal(err)
 	}
-	//req := &namingserver.RegisterServerReq{
-	//	Namespace: "etcd",
-	//	SvrName:   "experiment_server",
-	//	Addr:      fmt.Sprintf("%s:%d", ip, port),
-	//}
-	//resp, err := namingcli.RegisterServer(context.Background(), req)
-	//if err != nil {
-	//	log.Error("register server error: ", err)
-	//}
-	//if resp.Code != 0 {
-	//	log.Error("register server error: ", resp.Msg)
-	//}
 	appService := &applicationservice.ApplicationService{
 		ExperimentDomainSvr: domainservice.NewExperimentDomainService(&infrastructureadapter.Experiment{}),
 	}
