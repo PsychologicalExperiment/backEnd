@@ -9,6 +9,7 @@ import (
 	"github.com/PsychologicalExperiment/backEnd/util/plugins/config"
 	"github.com/PsychologicalExperiment/backEnd/util/plugins/log"
 	_ "github.com/PsychologicalExperiment/backEnd/util/plugins/naming"
+	_ "github.com/PsychologicalExperiment/backEnd/util/plugins/recovery"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpcprometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
