@@ -2,6 +2,10 @@ module github.com/PsychologicalExperiment/backEnd/server/user_info_server
 
 go 1.19
 
+replace (
+	github.com/PsychologicalExperiment/backEnd/util => ../../util
+)
+
 require (
 	github.com/PsychologicalExperiment/backEnd v0.0.0-20221228092006-c4424c0032c4
 	github.com/PsychologicalExperiment/backEnd/api/user_info_server v0.0.0-20221228092006-c4424c0032c4

@@ -3,7 +3,8 @@ package services
 import (
 	"context"
 	"fmt"
-	"github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/util"
+
+	"github.com/PsychologicalExperiment/backEnd/util/plugins/config"
 	"github.com/go-redis/redis/v8"
 
 	"github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/services/serverErr"
@@ -25,14 +26,16 @@ type UserInfoServerImpl struct {
 
 func NewUserInfoServerImpl() *UserInfoServerImpl {
 	//return &UserInfoServerImpl{db.Table("user_info"), nil}
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		util.GConfig.SqlConfig.User, util.GConfig.SqlConfig.Password, util.GConfig.SqlConfig.Ip, util.GConfig.SqlConfig.Port, util.GConfig.SqlConfig.DbName)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/psychological_experiment?charset=utf8&parseTime=True&loc=Local",
+		config.Config.Db.Master.User, config.Config.Db.Master.Passwd,
+		config.Config.Db.Master.IP, config.Config.Db.Master.Port)
 	writeDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		grpclog.Fatal(err)
 	}
-	dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		util.GConfig.SlaveConfig.User, util.GConfig.SlaveConfig.Password, util.GConfig.SlaveConfig.Ip, util.GConfig.SlaveConfig.Port, util.GConfig.SlaveConfig.DbName)
+	dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/psychological_experiment?charset=utf8&parseTime=True&loc=Local",
+		config.Config.Db.Slave.User, config.Config.Db.Slave.Passwd,
+		config.Config.Db.Slave.IP, config.Config.Db.Slave.Port)
 	readDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		grpclog.Fatal(err)
