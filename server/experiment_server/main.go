@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net"
 
 	pb "github.com/PsychologicalExperiment/backEnd/api/experiment_server"
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/internal/impl"
 	"github.com/PsychologicalExperiment/backEnd/util/plugins/config"
-	_ "github.com/PsychologicalExperiment/backEnd/util/plugins/log"
+	"github.com/PsychologicalExperiment/backEnd/util/plugins/log"
+	_ "github.com/PsychologicalExperiment/backEnd/util/plugins/naming"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpcprometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
@@ -27,12 +27,12 @@ func main() {
 		)),
 	)
 	conn, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", config.Config.Server.Port))
-	impl := &impl.ExperimentServerImpl{}
-	pb.RegisterExperimentServiceServer(s, impl)
-	grpcprometheus.DefaultServerMetrics.InitializeMetrics(s)
 	if err != nil {
 		log.Fatalf("tcp error: %+v", err)
 	}
+	impl := &impl.ExperimentServerImpl{}
+	pb.RegisterExperimentServiceServer(s, impl)
+	grpcprometheus.DefaultServerMetrics.InitializeMetrics(s)
 	if err := s.Serve(conn); err != nil {
 		log.Fatalf("start server error %+v", err)
 	}
