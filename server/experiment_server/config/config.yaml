@@ -1,0 +1,21 @@
+server:
+  server_name: experiment_server
+  port: 51000
+  log: /data/log/experiment_server.log
+prometheus:
+  ip: '0.0.0.0'
+  port: 9092
+mysql:
+  master:
+    ip: '118.195.204.214'
+    port: 3306
+    user: root
+    passwd: qianhaiwaibao
+  slave:
+    ip: '159.75.15.177'
+    port: 3306
+    user: root
+    passwd: qianhaiwaibao
+etcd:
+  ip: '159.75.15.177'
+  port: 2379
