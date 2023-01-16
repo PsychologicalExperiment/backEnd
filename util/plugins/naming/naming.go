@@ -6,15 +6,20 @@ import (
 	"net"
 
 	"github.com/PsychologicalExperiment/backEnd/util/plugins/config"
+	"github.com/PsychologicalExperiment/backEnd/util/plugins/log"
 	clientv3 "go.etcd.io/etcd/client/v3"
 )
 
-func EtcdRegisterServer(ctx context.Context, server, addr string, ttl int64) error {
+func init() {
+	EtcdRegisterServer()
+}
+
+func EtcdRegisterServer() error {
 	cli, err := clientv3.NewFromURL(fmt.Sprintf("http://%s:%d", config.Config.NamingServer.IP, config.Config.NamingServer.Port))
 	if err != nil {
 		return err
 	}
-	lease, err := cli.Grant(ctx, ttl)
+	lease, err := cli.Grant(context.Background(), 10)
 	if err != nil {
 		return err
 	}
@@ -22,13 +27,14 @@ func EtcdRegisterServer(ctx context.Context, server, addr string, ttl int64) err
 	if err != nil {
 		return err
 	}
-	key := fmt.Sprintf("/%s/%s", config.Config.Server.ServerName,
-		fmt.Sprintf("%s:%d", ip, config.Config.Server.Port))
-	_, err = cli.Put(ctx, key, addr, clientv3.WithLease(lease.ID))
+	addr := fmt.Sprintf("%s:%d", ip, config.Config.Server.Port)
+	key := fmt.Sprintf("/%s/%s", config.Config.Server.ServerName, addr)
+	log.Infof("register server: %s", key)
+	_, err = cli.Put(context.Background(), key, addr, clientv3.WithLease(lease.ID))
 	if err != nil {
 		return err
 	}
-	keepAlive, err := cli.KeepAlive(ctx, lease.ID)
+	keepAlive, err := cli.KeepAlive(context.Background(), lease.ID)
 	if err != nil {
 		return err
 	}

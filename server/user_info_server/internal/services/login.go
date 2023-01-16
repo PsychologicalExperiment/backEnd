@@ -2,11 +2,12 @@ package services
 
 import (
 	"context"
+	"strconv"
+	"strings"
+
 	userInfoPb "github.com/PsychologicalExperiment/backEnd/api/user_info_server"
 	"github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/services/serverErr"
 	"google.golang.org/grpc/grpclog"
-	"strconv"
-	"strings"
 )
 
 func (u *UserInfoServerImpl) Login(
