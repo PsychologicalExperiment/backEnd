@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.19.1
-// source: api/experiment_server/experiment_server.proto
+// source: experiment_server/experiment_server.proto
 
 package experiment_server
 
@@ -115,7 +115,7 @@ func (c *experimentServiceClient) QuerySubjectRecordList(ctx context.Context, in
 }
 
 // ExperimentServiceServer is the server API for ExperimentService service.
-// All implementations must embed UnimplementedExperimentServiceServer
+// All implementations should embed UnimplementedExperimentServiceServer
 // for forward compatibility
 type ExperimentServiceServer interface {
 	// 主试
@@ -128,10 +128,9 @@ type ExperimentServiceServer interface {
 	UpdateSubjectRecord(context.Context, *UpdateSubjectRecordReq) (*UpdateSubjectRecordResp, error)
 	QuerySubjectRecord(context.Context, *QuerySubjectRecordReq) (*QuerySubjectRecordResp, error)
 	QuerySubjectRecordList(context.Context, *QuerySubjectRecordListReq) (*QuerySubjectRecordListResp, error)
-	mustEmbedUnimplementedExperimentServiceServer()
 }
 
-// UnimplementedExperimentServiceServer must be embedded to have forward compatible implementations.
+// UnimplementedExperimentServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedExperimentServiceServer struct {
 }
 
@@ -159,7 +158,6 @@ func (UnimplementedExperimentServiceServer) QuerySubjectRecord(context.Context, 
 func (UnimplementedExperimentServiceServer) QuerySubjectRecordList(context.Context, *QuerySubjectRecordListReq) (*QuerySubjectRecordListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QuerySubjectRecordList not implemented")
 }
-func (UnimplementedExperimentServiceServer) mustEmbedUnimplementedExperimentServiceServer() {}
 
 // UnsafeExperimentServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to ExperimentServiceServer will
@@ -357,5 +355,5 @@ var ExperimentService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "api/experiment_server/experiment_server.proto",
+	Metadata: "experiment_server/experiment_server.proto",
 }
