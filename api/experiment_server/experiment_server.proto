@@ -129,6 +129,8 @@ message UpdateExperimentReq {
     int32 experiment_time = 6;  //  实验时间/min
     int32 participant_num = 7;  //  实验所需人数
     ExperimentState state = 8;  //  状态  0-草稿箱 1-已发布 2-已完成 3-已删除
+    int64 price = 9 [(validator.field) = {int_gt: 0}];
+    int32 cur_type = 10;
 }
 
 message UpdateExperimentResp {

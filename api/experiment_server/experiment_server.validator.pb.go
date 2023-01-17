@@ -66,6 +66,9 @@ func (this *CreateExperimentResp) Validate() error {
 	return nil
 }
 func (this *UpdateExperimentReq) Validate() error {
+	if !(this.Price > 0) {
+		return github_com_mwitkow_go_proto_validators.FieldError("Price", fmt.Errorf(`value '%v' must be greater than '0'`, this.Price))
+	}
 	return nil
 }
 func (this *UpdateExperimentResp) Validate() error {
