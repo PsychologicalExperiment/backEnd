@@ -8,6 +8,7 @@ import (
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/internal/impl"
 	"github.com/PsychologicalExperiment/backEnd/util/plugins/config"
 	"github.com/PsychologicalExperiment/backEnd/util/plugins/log"
+	_ "github.com/PsychologicalExperiment/backEnd/util/plugins/mon"
 	_ "github.com/PsychologicalExperiment/backEnd/util/plugins/naming"
 	_ "github.com/PsychologicalExperiment/backEnd/util/plugins/recovery"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
