@@ -22,7 +22,15 @@ func (this *CommonHead) Validate() error {
 func (this *CommonRsp) Validate() error {
 	return nil
 }
+func (this *UserInfo) Validate() error {
+	return nil
+}
 func (this *SubjectRecordInfo) Validate() error {
+	if this.UserInfo != nil {
+		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.UserInfo); err != nil {
+			return github_com_mwitkow_go_proto_validators.FieldError("UserInfo", err)
+		}
+	}
 	return nil
 }
 func (this *ExperimentInfo) Validate() error {

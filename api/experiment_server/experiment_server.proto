@@ -18,6 +18,38 @@ message CommonRsp{
     string msg = 2;
 }
 
+enum UserType{
+    // 主试类型
+    USER_TYPE_RESEARCHER = 0;
+    // 被试类型
+    USER_TYPE_PARTICIPANT = 1;
+}
+
+enum GenderType{
+    GENDER_TYPE_INVALID = 0;
+    // man
+    GENDER_TYPE_MAN = 1;
+    // woman
+    GENDER_TYPE_WOMAN = 2;
+}
+
+message UserInfo{
+    //email
+    string email = 1;
+    //phone number
+    string phone_number = 2;
+    //user name
+    string user_name = 3;
+    // gender
+    GenderType gender = 4;
+    // user type
+    UserType user_type = 5;
+    // custom user form
+    string extra = 6;
+    //user id
+    int64 uid = 7;
+}
+
 service ExperimentService{
     //  主试
     rpc CreateExperiment (CreateExperimentReq) returns (CreateExperimentResp);              //  发布一个新实验
@@ -53,6 +85,7 @@ message SubjectRecordInfo {
     int64 participant_id = 3;    // 被实id
     string time_taken = 4;        // 实验耗时
     SubjectRecordState state = 5; // 被试记录状态
+    UserInfo userInfo = 6;
 }
 
 message ExperimentInfo {
