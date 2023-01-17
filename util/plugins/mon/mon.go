@@ -7,24 +7,19 @@ import (
 
 	"github.com/PsychologicalExperiment/backEnd/util/plugins/config"
 	"github.com/PsychologicalExperiment/backEnd/util/plugins/log"
-	"github.com/PsychologicalExperiment/backEnd/util/plugins/naming"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func init() {
-	ip, err := naming.GetExternalIP()
-	if err != nil {
-		log.Infof("get ip error")
-		os.Exit(2)
-	}
 	httpServer := &http.Server{
 		Handler: promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{}),
-		Addr:    fmt.Sprintf("%s:%d", ip, config.Config.Monitor.Port),
+		Addr:    fmt.Sprintf("%s:%d", "0.0.0.0", config.Config.Monitor.Port),
 	}
 	go func() {
 		log.Infof("start promethues server")
 		if err := httpServer.ListenAndServe(); err != nil {
+			log.Errorf("start promethues server error: %+v", err)
 			os.Exit(2)
 		}
 	}()
