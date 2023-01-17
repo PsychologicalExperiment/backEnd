@@ -7,7 +7,6 @@ import (
 	fmt "fmt"
 	math "math"
 	proto "github.com/golang/protobuf/proto"
-	_ "github.com/PsychologicalExperiment/backEnd/api/api_common"
 	_ "github.com/mwitkow/go-proto-validators"
 	github_com_mwitkow_go_proto_validators "github.com/mwitkow/go-proto-validators"
 )
@@ -17,6 +16,12 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+func (this *CommonHead) Validate() error {
+	return nil
+}
+func (this *CommonRsp) Validate() error {
+	return nil
+}
 func (this *SubjectRecordInfo) Validate() error {
 	return nil
 }

@@ -83,7 +83,7 @@ message CreateExperimentReq {
 }
 
 message CreateExperimentResp {
-    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    CommonRsp common_rsp = 1;
     string experiment_id = 2;
 }
 
@@ -99,7 +99,7 @@ message UpdateExperimentReq {
 }
 
 message UpdateExperimentResp {
-    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    CommonRsp common_rsp = 1;
     string experiment_id = 2;
 }
 
@@ -109,7 +109,7 @@ message QueryExperimentReq {
 }
 
 message QueryExperimentResp {
-    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    CommonRsp common_rsp = 1;
     ExperimentInfo exp_info = 2;
     repeated SubjectRecordInfo subject_records = 3;
 }
@@ -125,7 +125,7 @@ message QueryExperimentListReq {
 }
 
 message QueryExperimentListResp {
-    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    CommonRsp common_rsp = 1;
     int32 total_num = 2;
     repeated ExperimentInfo exp_info_list = 3;
 }
@@ -137,7 +137,7 @@ message CreateSubjectRecordReq {
 }
 
 message CreateSubjectRecordResp {
-    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    CommonRsp common_rsp = 1;
     string subject_record_id = 2; // 被试记录id
 }
 
@@ -149,7 +149,7 @@ message UpdateSubjectRecordReq {
 }
 
 message UpdateSubjectRecordResp {
-    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    CommonRsp common_rsp = 1;
     string subject_record_id = 2;
 }
 
@@ -159,7 +159,7 @@ message QuerySubjectRecordReq {
 }
 
 message QuerySubjectRecordResp {
-    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    CommonRsp common_rsp = 1;
     SubjectRecordInfo subject_record = 2;
 }
 
@@ -171,7 +171,7 @@ message QuerySubjectRecordListReq {
 }
 
 message QuerySubjectRecordListResp {
-    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    CommonRsp common_rsp = 1;
     int32 total_num = 2;
     repeated SubjectRecordInfo subject_record_list = 3;
 }
