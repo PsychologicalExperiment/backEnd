@@ -56,7 +56,7 @@ message UserInfo{
     // custom user form
     string extra = 6;
     //user id
-    string uid = 7;
+    int64 uid = 7;
 }
 
 message RegisterReq{
