@@ -83,7 +83,7 @@ message SubjectRecordInfo {
     string subject_record_id = 1; // 被试记录id
     string experiment_id = 2;     // 实验id
     int64 participant_id = 3;    // 被实id
-    string time_taken = 4;        // 实验耗时
+    int64 time_taken = 4;        // 实验耗时
     SubjectRecordState state = 5; // 被试记录状态
     UserInfo userInfo = 6;
 }
