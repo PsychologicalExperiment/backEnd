@@ -5,6 +5,7 @@ package grpc.psychological_experiment.experiment_server;
 option go_package = "github.com/PsychologicalExperiment/backEnd/api/experiment_server";
 
 import "api_common/api_common.proto";
+import "validator.proto";
 
 service ExperimentService{
     //  主试
@@ -61,12 +62,12 @@ message ExperimentInfo {
 
 message CreateExperimentReq {
     string request_id = 1;
-    string title = 2; 
+    string title = 2;
     string description = 3;
     string researcher_id = 4;
     int32 experiment_time = 5;
     int32 participant_num = 6;
-    int64 price = 7;
+    int64 price = 7 [(validator.field) = {int_gt: 0}];
     int32 cur_type = 8;
 }
 
@@ -88,7 +89,7 @@ message UpdateExperimentReq {
 
 message UpdateExperimentResp {
     grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
-    string experiment_id = 2; 
+    string experiment_id = 2;
 }
 
 message QueryExperimentReq {
@@ -105,10 +106,9 @@ message QueryExperimentResp {
 message QueryExperimentListReq {
     string request_id = 1;
     string researcher_id = 2; // 主试id
-    int32 page_index = 3;  
+    int32 page_index = 3;
     int32 page_size = 4;
     int64 start_time = 5;
-    int64 end_time = 6;
     int64 min_price = 7;
     int32 only_see_myself = 8;
 }
@@ -139,12 +139,12 @@ message UpdateSubjectRecordReq {
 
 message UpdateSubjectRecordResp {
     grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
-    string subject_record_id = 2; 
+    string subject_record_id = 2;
 }
 
 message QuerySubjectRecordReq {
     string request_id = 1;
-    string subject_record_id = 2; 
+    string subject_record_id = 2;
 }
 
 message QuerySubjectRecordResp {
@@ -154,7 +154,7 @@ message QuerySubjectRecordResp {
 
 message QuerySubjectRecordListReq {
     string request_id = 1;
-    string experiment_id = 2; 
+    string experiment_id = 2;
     int32 page_index = 3;
     int32 page_size = 4;
 }
