@@ -4,8 +4,19 @@ package grpc.psychological_experiment.experiment_server;
 
 option go_package = "github.com/PsychologicalExperiment/backEnd/api/experiment_server";
 
-import "api_common/api_common.proto";
 import "validator.proto";
+
+message CommonHead{
+    // token 用户标识
+    string token = 1;
+}
+
+message CommonRsp{
+    //error_code
+    uint32 code = 1;
+    //msg
+    string msg = 2;
+}
 
 service ExperimentService{
     //  主试

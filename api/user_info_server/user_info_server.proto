@@ -4,7 +4,17 @@ package grpc.psychological_experiment.user_info_server;
 
 option go_package = "github.com/PsychologicalExperiment/backEnd/api/user_info_server";
 
-import "api/api_common/api_common.proto";
+message CommonHead{
+    // token 用户标识
+    string token = 1;
+}
+
+message CommonRsp{
+    //error_code
+    uint32 code = 1;
+    //msg
+    string msg = 2;
+}
 
 service UserService{
     // register a user
@@ -13,6 +23,8 @@ service UserService{
     rpc Login (LoginReq) returns (LoginRsp) {}
     // 查询用户信息
     rpc GetUserInfoBySearchKey (GetUserInfoBySearchKeyReq) returns (GetUserInfoBySearchKeyRsp) {}
+    // 批量查询用户信息
+    rpc BatchGetUserInfos (BatchGetUserInfoReq) returns (BatchGetUserInfoRsp) {}
 }
 
 enum UserType{
@@ -56,7 +68,7 @@ message RegisterReq{
 
 message RegisterRsp{
     // common rsp
-    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    CommonRsp common_rsp = 1;
     // uin
     string uin = 2;
 }
@@ -72,7 +84,7 @@ message LoginReq{
 
 message LoginRsp{
     // common rsp
-    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    CommonRsp common_rsp = 1;
     // user info
     UserInfo user_info = 2;
 }
@@ -84,7 +96,16 @@ message GetUserInfoBySearchKeyReq {
 
 message GetUserInfoBySearchKeyRsp {
     // common rsp
-    grpc.psychological_experiment.api_common.CommonRsp common_rsp = 1;
+    CommonRsp common_rsp = 1;
     // user info
     UserInfo user_info = 2;
+}
+
+message BatchGetUserInfoReq {
+    repeated int64 user_id = 1;
+}
+
+message BatchGetUserInfoRsp {
+    CommonRsp common_rsp = 1;
+    repeated UserInfo user_info = 2;
 }
