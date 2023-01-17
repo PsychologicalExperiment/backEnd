@@ -7,8 +7,8 @@ import (
 	fmt "fmt"
 	math "math"
 	proto "github.com/golang/protobuf/proto"
-	_ "github.com/mwitkow/go-proto-validators"
 	_ "github.com/PsychologicalExperiment/backEnd/api/api_common"
+	_ "github.com/mwitkow/go-proto-validators"
 	github_com_mwitkow_go_proto_validators "github.com/mwitkow/go-proto-validators"
 )
 
@@ -24,6 +24,21 @@ func (this *ExperimentInfo) Validate() error {
 	return nil
 }
 func (this *CreateExperimentReq) Validate() error {
+	if this.Title == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Title", fmt.Errorf(`value '%v' must not be an empty string`, this.Title))
+	}
+	if this.Description == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("Description", fmt.Errorf(`value '%v' must not be an empty string`, this.Description))
+	}
+	if this.ResearcherId == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("ResearcherId", fmt.Errorf(`value '%v' must not be an empty string`, this.ResearcherId))
+	}
+	if !(this.ExperimentTime > 0) {
+		return github_com_mwitkow_go_proto_validators.FieldError("ExperimentTime", fmt.Errorf(`value '%v' must be greater than '0'`, this.ExperimentTime))
+	}
+	if !(this.ParticipantNum > 0) {
+		return github_com_mwitkow_go_proto_validators.FieldError("ParticipantNum", fmt.Errorf(`value '%v' must be greater than '0'`, this.ParticipantNum))
+	}
 	if !(this.Price > 0) {
 		return github_com_mwitkow_go_proto_validators.FieldError("Price", fmt.Errorf(`value '%v' must be greater than '0'`, this.Price))
 	}
@@ -90,6 +105,12 @@ func (this *QueryExperimentListResp) Validate() error {
 	return nil
 }
 func (this *CreateSubjectRecordReq) Validate() error {
+	if this.ExperimentId == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("ExperimentId", fmt.Errorf(`value '%v' must not be an empty string`, this.ExperimentId))
+	}
+	if !(this.ParticipantId > 0) {
+		return github_com_mwitkow_go_proto_validators.FieldError("ParticipantId", fmt.Errorf(`value '%v' must be greater than '0'`, this.ParticipantId))
+	}
 	return nil
 }
 func (this *CreateSubjectRecordResp) Validate() error {
@@ -101,6 +122,12 @@ func (this *CreateSubjectRecordResp) Validate() error {
 	return nil
 }
 func (this *UpdateSubjectRecordReq) Validate() error {
+	if this.SubjectRecordId == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("SubjectRecordId", fmt.Errorf(`value '%v' must not be an empty string`, this.SubjectRecordId))
+	}
+	if !(this.UserId > 0) {
+		return github_com_mwitkow_go_proto_validators.FieldError("UserId", fmt.Errorf(`value '%v' must be greater than '0'`, this.UserId))
+	}
 	return nil
 }
 func (this *UpdateSubjectRecordResp) Validate() error {
@@ -112,6 +139,9 @@ func (this *UpdateSubjectRecordResp) Validate() error {
 	return nil
 }
 func (this *QuerySubjectRecordReq) Validate() error {
+	if this.SubjectRecordId == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("SubjectRecordId", fmt.Errorf(`value '%v' must not be an empty string`, this.SubjectRecordId))
+	}
 	return nil
 }
 func (this *QuerySubjectRecordResp) Validate() error {
@@ -128,6 +158,9 @@ func (this *QuerySubjectRecordResp) Validate() error {
 	return nil
 }
 func (this *QuerySubjectRecordListReq) Validate() error {
+	if this.ExperimentId == "" {
+		return github_com_mwitkow_go_proto_validators.FieldError("ExperimentId", fmt.Errorf(`value '%v' must not be an empty string`, this.ExperimentId))
+	}
 	return nil
 }
 func (this *QuerySubjectRecordListResp) Validate() error {
