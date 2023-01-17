@@ -30,8 +30,8 @@ func (this *CreateExperimentReq) Validate() error {
 	if this.Description == "" {
 		return github_com_mwitkow_go_proto_validators.FieldError("Description", fmt.Errorf(`value '%v' must not be an empty string`, this.Description))
 	}
-	if this.ResearcherId == "" {
-		return github_com_mwitkow_go_proto_validators.FieldError("ResearcherId", fmt.Errorf(`value '%v' must not be an empty string`, this.ResearcherId))
+	if !(this.ResearcherId > 0) {
+		return github_com_mwitkow_go_proto_validators.FieldError("ResearcherId", fmt.Errorf(`value '%v' must be greater than '0'`, this.ResearcherId))
 	}
 	if !(this.ExperimentTime > 0) {
 		return github_com_mwitkow_go_proto_validators.FieldError("ExperimentTime", fmt.Errorf(`value '%v' must be greater than '0'`, this.ExperimentTime))
@@ -87,6 +87,9 @@ func (this *QueryExperimentResp) Validate() error {
 	return nil
 }
 func (this *QueryExperimentListReq) Validate() error {
+	if !(this.ResearcherId > 0) {
+		return github_com_mwitkow_go_proto_validators.FieldError("ResearcherId", fmt.Errorf(`value '%v' must be greater than '0'`, this.ResearcherId))
+	}
 	return nil
 }
 func (this *QueryExperimentListResp) Validate() error {
