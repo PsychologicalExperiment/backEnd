@@ -64,11 +64,12 @@ type ExperimentDao interface {
 
 // QueryExperimentReq 查询条件
 type QueryExperimentReq struct {
-	ResearcherId int32
-	Offset       int
-	Limit        int
-	MinPrice     int64
-	EndTime      int64
+	ResearcherId  int64
+	Offset        int
+	Limit         int
+	MinPrice      int64
+	EndTime       int64
+	OnlySeeMyself int32
 }
 
 // QuerySubjectRecordReq 查询条件

@@ -7,6 +7,7 @@ import (
 	userInfoPb "github.com/PsychologicalExperiment/backEnd/api/user_info_server"
 	userInfo "github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/services"
 	"github.com/PsychologicalExperiment/backEnd/util/plugins/config"
+	_ "github.com/PsychologicalExperiment/backEnd/util/plugins/naming"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"

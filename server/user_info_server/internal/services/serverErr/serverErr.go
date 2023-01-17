@@ -3,7 +3,6 @@ package serverErr
 import (
 	"fmt"
 
-	commonPb "github.com/PsychologicalExperiment/backEnd/api/api_common"
 	errCodePb "github.com/PsychologicalExperiment/backEnd/api/error_code"
 	userInfoPb "github.com/PsychologicalExperiment/backEnd/api/user_info_server"
 	"google.golang.org/grpc/grpclog"
@@ -101,7 +100,7 @@ func RegisterErrRsp(
 		myerr = New(ErrParamsTypeErrorInServer)
 	}
 	return &userInfoPb.RegisterRsp{
-		CommonRsp: &commonPb.CommonRsp{
+		CommonRsp: &userInfoPb.CommonRsp{
 			Code: uint32(myerr.ErrorCode),
 			Msg:  myerr.ErrorMsg,
 		},
@@ -110,13 +109,13 @@ func RegisterErrRsp(
 
 func CommonRsp(
 	err error,
-) *commonPb.CommonRsp {
+) *userInfoPb.CommonRsp {
 	myerr, ok := err.(ErrorImpl)
 	if !ok {
 		grpclog.Errorf("ErrRspQueryFromDruid|error usage of error code")
 		myerr = New(ErrParamsTypeErrorInServer)
 	}
-	return &commonPb.CommonRsp{
+	return &userInfoPb.CommonRsp{
 		Code: uint32(myerr.ErrorCode),
 		Msg:  myerr.ErrorMsg,
 	}

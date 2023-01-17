@@ -119,14 +119,14 @@ func (e *ExperimentDaoImpl) FindExperiments(
 		return nil, 0, err
 	}
 	tx = tx.Table(experimentInfoTableName).Debug()
-	if qry.EndTime != 0 {
-		tx = tx.Where("created_at > ?", time.Unix(qry.EndTime, 0))
-	}
 	if qry.MinPrice != 0 {
 		tx = tx.Where("price > ?", qry.MinPrice)
 	}
 	if qry.ResearcherId != 0 {
 		tx = tx.Where("researcher_id = ?", qry.ResearcherId)
+	}
+	if qry.EndTime != 0 {
+		tx = tx.Where("end_time > ?", time.Unix(qry.EndTime, 0))
 	}
 	// TODO: 新增条件在这里加
 	var cnt int64

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/PsychologicalExperiment/backEnd/util/plugins/config"
+	"github.com/PsychologicalExperiment/backEnd/util/plugins/log"
 	"github.com/go-redis/redis/v8"
 
 	"github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/services/serverErr"
@@ -26,14 +27,14 @@ type UserInfoServerImpl struct {
 
 func NewUserInfoServerImpl() *UserInfoServerImpl {
 	//return &UserInfoServerImpl{db.Table("user_info"), nil}
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/psychological_experiment?charset=utf8&parseTime=True&loc=Local",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/psychological_experiment?charset=utf8&parseTime=True&loc=Local",
 		config.Config.Db.Master.User, config.Config.Db.Master.Passwd,
 		config.Config.Db.Master.IP, config.Config.Db.Master.Port)
 	writeDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		grpclog.Fatal(err)
 	}
-	dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/psychological_experiment?charset=utf8&parseTime=True&loc=Local",
+	dsn = fmt.Sprintf("%s:%s@tcp(%s:%d)/psychological_experiment?charset=utf8&parseTime=True&loc=Local",
 		config.Config.Db.Slave.User, config.Config.Db.Slave.Passwd,
 		config.Config.Db.Slave.IP, config.Config.Db.Slave.Port)
 	readDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -101,4 +102,18 @@ func (u *UserInfoServerImpl) setTokenForUser(
 		return serverErr.New(serverErr.ErrSetRedisFailed)
 	}
 	return nil
+}
+
+func (u *UserInfoServerImpl) batchGetUserInfo(
+	ctx context.Context,
+	keys []int64,
+) ([]userInfo, error) {
+	users := []userInfo{}
+	if err := u.readConn.Table("user_info").
+		Debug().
+		Find(&users).Error; err != nil {
+		log.Errorf("batch get user info from db error: %+v", err)
+		return nil, serverErr.New(serverErr.ErrMySqlError)
+	}
+	return users, nil
 }

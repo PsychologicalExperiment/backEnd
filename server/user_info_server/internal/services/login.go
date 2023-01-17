@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"strconv"
 	"strings"
 
 	userInfoPb "github.com/PsychologicalExperiment/backEnd/api/user_info_server"
@@ -42,7 +41,7 @@ func (u *UserInfoServerImpl) Login(
 	resp := &userInfoPb.LoginRsp{
 		CommonRsp: serverErr.CommonRsp(serverErr.New(serverErr.OKCode)),
 		UserInfo: &userInfoPb.UserInfo{UserType: userInfoPb.UserType(user[0].UserType), Email: user[0].Email, PhoneNumber: user[0].PhoneNumber,
-			UserName: user[0].UserName, Gender: userInfoPb.GenderType(user[0].Gender), Extra: user[0].Extra, Uid: strconv.Itoa(int(user[0].ID))},
+			UserName: user[0].UserName, Gender: userInfoPb.GenderType(user[0].Gender), Extra: user[0].Extra, Uid: int64(user[0].ID)},
 	}
 	return resp, nil
 }

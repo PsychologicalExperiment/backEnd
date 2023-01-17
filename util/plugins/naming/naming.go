@@ -3,14 +3,14 @@ package naming
 import (
 	"context"
 	"fmt"
-	clientv3 "go.etcd.io/etcd/client/v3"
-	"go.etcd.io/etcd/client/v3/naming/endpoints"
 	"io"
 	"net"
 	"net/http"
 
+	clientv3 "go.etcd.io/etcd/client/v3"
+	"go.etcd.io/etcd/client/v3/naming/endpoints"
+
 	"github.com/PsychologicalExperiment/backEnd/util/plugins/config"
-	"github.com/PsychologicalExperiment/backEnd/util/plugins/log"
 )
 
 const (
@@ -34,16 +34,16 @@ func EtcdRegisterServer() error {
 	if err != nil {
 		return err
 	}
-	key := fmt.Sprintf("%s/%s/%s", namespace, config.Config.Server.ServerName, addr)
 	addr := fmt.Sprintf("%s:%d", ip, config.Config.Server.Port)
-	em, err := endpoints.NewManager(cli, namspace)
+	key := fmt.Sprintf("%s/%s/%s", namespace, config.Config.Server.ServerName, addr)
+	em, err := endpoints.NewManager(cli, namespace)
 	if err != nil {
 		return err
 	}
-	if err := em.AddEndpoint(ctx, key, endpoints.Endpoint{Addr: addr}, clientv3.WithLease(lease.ID)); err != nil {
+	if err := em.AddEndpoint(context.Background(), key, endpoints.Endpoint{Addr: addr}, clientv3.WithLease(lease.ID)); err != nil {
 		return err
 	}
-	keepAlive, err := cli.KeepAlive(ctx, lease.ID)
+	keepAlive, err := cli.KeepAlive(context.Background(), lease.ID)
 	//ctx, cancel := context.WithCancel(ctx)
 	if err != nil || keepAlive == nil {
 		return err
@@ -88,5 +88,8 @@ func GetExternalIP() (string, error) {
 		}
 	}()
 	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
 	return string(b), nil
 }

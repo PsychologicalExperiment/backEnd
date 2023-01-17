@@ -2,7 +2,7 @@ package services
 
 import (
 	"context"
-	commonPb "github.com/PsychologicalExperiment/backEnd/api/api_common"
+
 	userInfoPb "github.com/PsychologicalExperiment/backEnd/api/user_info_server"
 	"github.com/PsychologicalExperiment/backEnd/server/user_info_server/internal/services/serverErr"
 	"google.golang.org/grpc/grpclog"
@@ -52,7 +52,7 @@ func (u *UserInfoServerImpl) Register(
 		}, nil
 	}
 	rsp := &userInfoPb.RegisterRsp{
-		CommonRsp: &commonPb.CommonRsp{
+		CommonRsp: &userInfoPb.CommonRsp{
 			Code: uint32(serverErr.OKCode),
 			Msg:  "ok",
 		},

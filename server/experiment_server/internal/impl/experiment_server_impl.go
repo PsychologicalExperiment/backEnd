@@ -2,18 +2,16 @@ package impl
 
 import (
 	"context"
-	"strconv"
 
-	commonPb "github.com/PsychologicalExperiment/backEnd/api/api_common"
 	pb "github.com/PsychologicalExperiment/backEnd/api/experiment_server"
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/internal/entity"
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/internal/errorcode"
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/internal/mysql"
+	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/internal/rpc"
 	"github.com/PsychologicalExperiment/backEnd/util/plugins/log"
 )
 
 type ExperimentServerImpl struct {
-	pb.UnimplementedExperimentServiceServer
 }
 
 func (s *ExperimentServerImpl) CreateExperiment(
@@ -28,14 +26,13 @@ func (s *ExperimentServerImpl) CreateExperiment(
 				myerr = errorcode.New(errorcode.ErrParamsTypeErrorInServer)
 			}
 			resp = &pb.CreateExperimentResp{
-				CommonRsp: &commonPb.CommonRsp{
+				CommonRsp: &pb.CommonRsp{
 					Code: myerr.ErrorCode,
 					Msg:  myerr.ErrorMsg,
 				},
 			}
 		}
 	}()
-	// pb to entity
 	e := &entity.ExperimentEntity{
 		Title:          req.Title,
 		Description:    req.Description,
@@ -43,8 +40,10 @@ func (s *ExperimentServerImpl) CreateExperiment(
 		ExperimentTime: req.ExperimentTime,
 		ParticipantNum: req.ParticipantNum,
 		State:          int32(pb.ExperimentState_EXP_PUBLISHED),
-		// CurType: req.CurType,
+		Price:          req.Price,
+		CurType:        req.CurType,
 	}
+	log.Infof("e: %+v", e)
 	// TODO: 判断用户是否存在
 
 	dao := &mysql.ExperimentDaoImpl{}
@@ -53,7 +52,7 @@ func (s *ExperimentServerImpl) CreateExperiment(
 		return nil, err
 	}
 	resp = &pb.CreateExperimentResp{
-		CommonRsp: &commonPb.CommonRsp{
+		CommonRsp: &pb.CommonRsp{
 			Code: errorcode.OKCode,
 			Msg:  "success",
 		},
@@ -74,7 +73,7 @@ func (s *ExperimentServerImpl) QueryExperiment(
 				myerr = errorcode.New(errorcode.ErrParamsTypeErrorInServer)
 			}
 			resp = &pb.QueryExperimentResp{
-				CommonRsp: &commonPb.CommonRsp{
+				CommonRsp: &pb.CommonRsp{
 					Code: myerr.ErrorCode,
 					Msg:  myerr.ErrorMsg,
 				},
@@ -89,7 +88,7 @@ func (s *ExperimentServerImpl) QueryExperiment(
 		return nil, err
 	}
 	resp = &pb.QueryExperimentResp{
-		CommonRsp: &commonPb.CommonRsp{
+		CommonRsp: &pb.CommonRsp{
 			Code: errorcode.OKCode,
 			Msg:  "success",
 		},
@@ -120,22 +119,20 @@ func (s *ExperimentServerImpl) QueryExperimentList(
 				myerr = errorcode.New(errorcode.ErrParamsTypeErrorInServer)
 			}
 			resp = &pb.QueryExperimentListResp{
-				CommonRsp: &commonPb.CommonRsp{
+				CommonRsp: &pb.CommonRsp{
 					Code: myerr.ErrorCode,
 					Msg:  myerr.ErrorMsg,
 				},
 			}
 		}
 	}()
-	id, err := strconv.Atoi(req.ResearcherId)
-	if err != nil {
-		return nil, err
-	}
+
 	qry := mysql.QueryExperimentReq{
-		ResearcherId: int32(id),
-		Offset:       int(req.PageIndex),
-		Limit:        int(req.PageSize),
-		// TODO: price
+		ResearcherId:  req.ResearcherId,
+		Offset:        int(req.PageIndex),
+		Limit:         int(req.PageSize),
+		MinPrice:      req.MinPrice,
+		OnlySeeMyself: req.OnlySeeMyself,
 	}
 	// DB查數據
 	dao := &mysql.ExperimentDaoImpl{}
@@ -156,11 +153,13 @@ func (s *ExperimentServerImpl) QueryExperimentList(
 			ParticipantNum: v.ParticipantNum,
 			CreateTime:     v.CreatedAt.Format("2006-01-02 15:04:05"),
 			UpdateTime:     v.UpdatedAt.Format("2006-01-02 15:04:05"),
+			Price:          v.Price,
+			CurType:        v.CurType,
 		}
 		exps = append(exps, t)
 	}
 	resp = &pb.QueryExperimentListResp{
-		CommonRsp: &commonPb.CommonRsp{
+		CommonRsp: &pb.CommonRsp{
 			Code: errorcode.OKCode,
 			Msg:  "success",
 		},
@@ -182,7 +181,7 @@ func (s *ExperimentServerImpl) UpdateExperiment(
 				myerr = errorcode.New(errorcode.ErrParamsTypeErrorInServer)
 			}
 			resp = &pb.UpdateExperimentResp{
-				CommonRsp: &commonPb.CommonRsp{
+				CommonRsp: &pb.CommonRsp{
 					Code: myerr.ErrorCode,
 					Msg:  myerr.ErrorMsg,
 				},
@@ -198,13 +197,15 @@ func (s *ExperimentServerImpl) UpdateExperiment(
 		ExperimentTime: req.ExperimentTime,
 		ParticipantNum: req.ParticipantNum,
 		State:          int32(pb.ExperimentState_EXP_PUBLISHED),
+		CurType:        req.CurType,
+		Price:          req.Price,
 		// CurType: req.CurType,
 	}
 	if err := dao.UpdateExperiment(ctx, e); err != nil {
 		return nil, err
 	}
 	resp = &pb.UpdateExperimentResp{
-		CommonRsp: &commonPb.CommonRsp{
+		CommonRsp: &pb.CommonRsp{
 			Code: errorcode.OKCode,
 			Msg:  "success",
 		},
@@ -224,7 +225,7 @@ func (s *ExperimentServerImpl) CreateSubjectRecord(
 				myerr = errorcode.New(errorcode.ErrParamsTypeErrorInServer)
 			}
 			resp = &pb.CreateSubjectRecordResp{
-				CommonRsp: &commonPb.CommonRsp{
+				CommonRsp: &pb.CommonRsp{
 					Code: myerr.ErrorCode,
 					Msg:  myerr.ErrorMsg,
 				},
@@ -241,7 +242,7 @@ func (s *ExperimentServerImpl) CreateSubjectRecord(
 		return nil, err
 	}
 	resp = &pb.CreateSubjectRecordResp{
-		CommonRsp: &commonPb.CommonRsp{
+		CommonRsp: &pb.CommonRsp{
 			Code: errorcode.OKCode,
 			Msg:  "success",
 		},
@@ -262,7 +263,7 @@ func (s *ExperimentServerImpl) UpdateSubjectRecord(
 				myerr = errorcode.New(errorcode.ErrParamsTypeErrorInServer)
 			}
 			resp = &pb.UpdateSubjectRecordResp{
-				CommonRsp: &commonPb.CommonRsp{
+				CommonRsp: &pb.CommonRsp{
 					Code: myerr.ErrorCode,
 					Msg:  myerr.ErrorMsg,
 				},
@@ -278,7 +279,7 @@ func (s *ExperimentServerImpl) UpdateSubjectRecord(
 		return nil, err
 	}
 	resp = &pb.UpdateSubjectRecordResp{
-		CommonRsp: &commonPb.CommonRsp{
+		CommonRsp: &pb.CommonRsp{
 			Code: errorcode.OKCode,
 			Msg:  "success",
 		},
@@ -298,7 +299,7 @@ func (s *ExperimentServerImpl) QuerySubjectRecord(
 				myerr = errorcode.New(errorcode.ErrParamsTypeErrorInServer)
 			}
 			resp = &pb.QuerySubjectRecordResp{
-				CommonRsp: &commonPb.CommonRsp{
+				CommonRsp: &pb.CommonRsp{
 					Code: myerr.ErrorCode,
 					Msg:  myerr.ErrorMsg,
 				},
@@ -312,7 +313,7 @@ func (s *ExperimentServerImpl) QuerySubjectRecord(
 		return nil, err
 	}
 	resp = &pb.QuerySubjectRecordResp{
-		CommonRsp: &commonPb.CommonRsp{
+		CommonRsp: &pb.CommonRsp{
 			Code: errorcode.OKCode,
 			Msg:  "success",
 		},
@@ -321,7 +322,7 @@ func (s *ExperimentServerImpl) QuerySubjectRecord(
 			ExperimentId:    res.ExperimentId,
 			ParticipantId:   res.ParticipantId,
 			// TODO: TimeTaken需要修改
-			TimeTaken: res.FinishTime.Format("2006-01-02 15:04:05"),
+			TimeTaken: res.FinishTime.Unix() - res.CreatedAt.Unix(),
 			State:     pb.SubjectRecordState(res.State),
 		},
 	}
@@ -340,7 +341,7 @@ func (s *ExperimentServerImpl) QuerySubjectRecordList(
 				myerr = errorcode.New(errorcode.ErrParamsTypeErrorInServer)
 			}
 			resp = &pb.QuerySubjectRecordListResp{
-				CommonRsp: &commonPb.CommonRsp{
+				CommonRsp: &pb.CommonRsp{
 					Code: myerr.ErrorCode,
 					Msg:  myerr.ErrorMsg,
 				},
@@ -351,7 +352,6 @@ func (s *ExperimentServerImpl) QuerySubjectRecordList(
 		ExperimentId: req.ExperimentId,
 		Offset:       int(req.PageIndex),
 		Limit:        int(req.PageSize),
-		// TODO: price
 	}
 	// DB查數據
 	dao := &mysql.ExperimentDaoImpl{}
@@ -359,25 +359,54 @@ func (s *ExperimentServerImpl) QuerySubjectRecordList(
 	if err != nil {
 		return nil, err
 	}
+	var ids []int64
+	for _, v := range res {
+		ids = append(ids, v.ParticipantId)
+	}
+	ucli, err := rpc.NewUserInfoServerClient()
+	if err != nil {
+		return nil, err
+	}
+	users, err := ucli.BatchGetUserInfo(ctx, ids)
+	if err != nil {
+		return nil, err
+	}
 	// 構造回包數據
 	var rcds []*pb.SubjectRecordInfo
 	for _, v := range res {
+		var user *pb.UserInfo
+		for _, u := range users {
+			if v.ParticipantId == u.UserId {
+				user = &pb.UserInfo{
+					Email:       u.Email,
+					PhoneNumber: u.PhoneNumber,
+					UserName:    u.UserName,
+					Gender:      pb.GenderType(u.Gender),
+					UserType:    pb.UserType(u.UserType),
+					Extra:       u.Extra,
+					Uid:         u.UserId,
+				}
+				break
+			}
+		}
 		t := &pb.SubjectRecordInfo{
 			ExperimentId:    v.ExperimentId,
 			SubjectRecordId: v.SubjectRecordId,
 			ParticipantId:   v.ParticipantId,
-			TimeTaken:       v.FinishTime.Format("2006-01-02 15:04:05"),
+			TimeTaken:       v.FinishTime.Unix() - v.CreatedAt.Unix(),
 			State:           pb.SubjectRecordState(v.State),
+			UserInfo:        user,
 		}
 		rcds = append(rcds, t)
 	}
 	resp = &pb.QuerySubjectRecordListResp{
-		CommonRsp: &commonPb.CommonRsp{
+		CommonRsp: &pb.CommonRsp{
 			Code: errorcode.OKCode,
 			Msg:  "success",
 		},
 		TotalNum:          int32(num),
 		SubjectRecordList: rcds,
 	}
+	log.Infof("QuerySubjectRecordList resp: %+v", resp)
 	return resp, err
 }
