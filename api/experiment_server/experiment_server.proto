@@ -86,6 +86,7 @@ message SubjectRecordInfo {
     int64 time_taken = 4;        // 实验耗时
     SubjectRecordState state = 5; // 被试记录状态
     UserInfo userInfo = 6;
+    string create_time = 7;
 }
 
 message ExperimentInfo {
