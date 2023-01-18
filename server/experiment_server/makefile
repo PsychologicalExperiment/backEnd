@@ -2,7 +2,9 @@ APP=experiment_server
 build:
 	export GOPROXY=https://mirrors.aliyun.com/goproxy/
 	go mod tidy
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/${APP} main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o dist/${APP} main.go
+	cp -r config/ dist/
+	cp scripts/restart.sh dist/
 
 javis-remote:
 	ssh javis "sudo rm -rf /data/psychology/${APP}/${APP} &> /dev/null"

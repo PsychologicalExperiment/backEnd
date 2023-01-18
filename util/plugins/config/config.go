@@ -1,6 +1,7 @@
 package config
 
 import (
+	"flag"
 	"fmt"
 	"os"
 
@@ -9,6 +10,7 @@ import (
 
 var (
 	Config GlobalConfig
+	path   string
 )
 
 type ServerConfig struct {
@@ -47,7 +49,8 @@ type GlobalConfig struct {
 }
 
 func init() {
-	config, err := os.ReadFile("./config/config.yaml")
+	flag.StringVar(&path, "conf", "./config/config.yaml", "config.yaml path")
+	config, err := os.ReadFile(path)
 	if err != nil {
 		fmt.Printf("read config failed, error: %+v", err)
 		os.Exit(1)
