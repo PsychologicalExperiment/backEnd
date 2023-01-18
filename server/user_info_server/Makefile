@@ -33,11 +33,12 @@ all:
 clean:
 	@rm -rf ${RELEASE}
 
+APP=user_info_server
 build:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/${NAME} cmd/main.go
-	ssh Javis-root "sudo rm -rf /data/server/${NAME} &> /dev/null"
-	ssh -q Javis-root "kill -9 `ps -ef | grep -v grep | grep ${NAME} | awk '{print $$2}'` > /dev/null 2>&1 &"
-	scp bin/${NAME} Javis-root:/data/server/
-	ssh Javis-root "cd /data/server/ && chmod 777 ${NAME} && ./${NAME} > /dev/null 2>&1 &"
+	export GOPROXY=https://mirrors.aliyun.com/goproxy/
+	go mod tidy
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o dist/${APP} cmd/main.go
+	cp -r config/ dist/
+	cp scripts/restart.sh dist/
 
 .PHONY: all build clean
