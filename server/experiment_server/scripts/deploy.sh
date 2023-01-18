@@ -4,7 +4,7 @@ f1() {
     scp experiment_server.tar.gz ahan:/tmp/
     rm -rf /data/psychology/experiment_server/*
     cp -r dist/* /data/psychology/experiment_server/
-    cd /data/psychology/experiment_server && sh restart.sh &
+    cd /data/psychology/experiment_server/ && sh restart.sh &
 }
 
 f2() {
