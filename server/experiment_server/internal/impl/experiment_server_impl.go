@@ -45,7 +45,21 @@ func (s *ExperimentServerImpl) CreateExperiment(
 		CurType:        req.CurType,
 	}
 	log.Infof("e: %+v", e)
-	// TODO: 判断用户是否存在
+
+	ucli, err := rpc.NewUserInfoServerClient()
+	if err != nil {
+		return nil, err
+	}
+	user, err := ucli.GetUserInfoById(ctx, req.ResearcherId)
+	if err != nil || user == nil {
+		log.Errorf("researcher_id: %d does not exist", req.ResearcherId)
+		return nil, errorcode.New(errorcode.ErrRearcherNotExist)
+	}
+	if user.UserType != 0 {
+		// 非主试不能创建实验
+		log.Errorf("researcher_id: %d, user_type: %d can not create experiment.", req.ResearcherId, user.UserType)
+		return nil, errorcode.New(errorcode.ErrParamsInvalid)
+	}
 
 	dao := &mysql.ExperimentDaoImpl{}
 	id, err := dao.SaveExperiment(ctx, e)
@@ -318,6 +332,16 @@ func (s *ExperimentServerImpl) QuerySubjectRecord(
 	if err != nil {
 		return nil, err
 	}
+	//  获取用户数据
+	ucli, err := rpc.NewUserInfoServerClient()
+	if err != nil {
+		return nil, err
+	}
+	user, err := ucli.GetUserInfoById(ctx, res.ParticipantId)
+	if err != nil || user == nil {
+		log.Errorf("researcher_id: %d does not exist", res.ParticipantId)
+		return nil, errorcode.New(errorcode.ErrRearcherNotExist)
+	}
 	resp = &pb.QuerySubjectRecordResp{
 		CommonRsp: &pb.CommonRsp{
 			Code: errorcode.OKCode,
@@ -328,8 +352,18 @@ func (s *ExperimentServerImpl) QuerySubjectRecord(
 			ExperimentId:    res.ExperimentId,
 			ParticipantId:   res.ParticipantId,
 			// TODO: TimeTaken需要修改
-			TimeTaken: res.FinishTime.Unix() - res.CreatedAt.Unix(),
-			State:     pb.SubjectRecordState(res.State),
+			TimeTaken:  res.FinishTime.Unix() - res.CreatedAt.Unix(),
+			State:      pb.SubjectRecordState(res.State),
+			CreateTime: res.CreatedAt.Format("2006-01-02 15:04:05"),
+			UserInfo: &pb.UserInfo{
+				Email:       user.Email,
+				PhoneNumber: user.PhoneNumber,
+				UserName:    user.UserName,
+				Gender:      pb.GenderType(user.Gender),
+				UserType:    pb.UserType(user.UserType),
+				Extra:       user.Extra,
+				Uid:         user.UserId,
+			},
 		},
 	}
 	return resp, err
@@ -377,8 +411,14 @@ func (s *ExperimentServerImpl) QuerySubjectRecordList(
 	if err != nil {
 		return nil, err
 	}
+	// 查实验数据
+	exp, err := dao.FindExperiment(ctx, req.ExperimentId)
+	if err != nil {
+		return nil, err
+	}
 	// 構造回包數據
 	var rcds []*pb.SubjectRecordInfo
+	finishNum := 0
 	for _, v := range res {
 		var user *pb.UserInfo
 		for _, u := range users {
@@ -394,6 +434,9 @@ func (s *ExperimentServerImpl) QuerySubjectRecordList(
 				}
 				break
 			}
+		}
+		if v.State == 1 {
+			finishNum++
 		}
 		t := &pb.SubjectRecordInfo{
 			ExperimentId:    v.ExperimentId,
@@ -413,6 +456,7 @@ func (s *ExperimentServerImpl) QuerySubjectRecordList(
 		},
 		TotalNum:          int32(num),
 		SubjectRecordList: rcds,
+		FinishPcts:        float32(finishNum) / float32(exp.ParticipantNum),
 	}
 	log.Infof("QuerySubjectRecordList resp: %+v", resp)
 	return resp, err

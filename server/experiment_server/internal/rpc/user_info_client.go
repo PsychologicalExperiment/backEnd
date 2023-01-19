@@ -43,8 +43,28 @@ func NewUserInfoServerClient() (*client, error) {
 func (s *client) GetUserInfoById(
 	ctx context.Context,
 	id int64,
-) (entity.UserInfoEntity, error) {
-	var res entity.UserInfoEntity
+) (*entity.UserInfoEntity, error) {
+	req := &pb.GetUserInfoBySearchKeyReq{
+		UserId: id,
+	}
+	resp, err := s.cli.GetUserInfoBySearchKey(ctx, req)
+	if err != nil {
+		log.Errorf("GetUserInfoById err: %+v", err)
+		return nil, err
+	}
+	if resp.CommonRsp.Code != 0 {
+		log.Errorf("GetUserInfoBySearchKey resp: %+v", resp)
+		return nil, err
+	}
+	res := &entity.UserInfoEntity{
+		UserId:      resp.UserInfo.Uid,
+		Email:       resp.UserInfo.Email,
+		PhoneNumber: resp.UserInfo.PhoneNumber,
+		UserName:    resp.UserInfo.UserName,
+		Gender:      int32(resp.UserInfo.Gender),
+		UserType:    int32(resp.UserInfo.UserType),
+		Extra:       resp.UserInfo.Extra,
+	}
 	// TODO
 	return res, nil
 }
@@ -59,7 +79,7 @@ func (s *client) BatchGetUserInfo(
 	resp, err := s.cli.BatchGetUserInfos(ctx, req)
 	if err != nil {
 		log.Errorf("BatchGetUserInfo err: %+v", err)
-		return nil, nil
+		return nil, err
 	}
 	log.Infof("BatchGetUserInfo resp: %+v", resp)
 	var res []entity.UserInfoEntity

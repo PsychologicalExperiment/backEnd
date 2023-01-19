@@ -80,7 +80,7 @@ func (u *UserInfoServerImpl) isUinqueKeyUsed(
 }
 
 func (u *UserInfoServerImpl) getUserInfosByKey(
-	queryKey, queryVal string,
+	queryKey, queryVal interface{},
 ) ([]userInfo, error) {
 	users := []userInfo{}
 	res := u.readConn.Table("user_info").Where(fmt.Sprintf("%s = ?", queryKey), queryVal).Debug().Find(&users)

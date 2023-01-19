@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/internal/entity"
+	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/internal/errorcode"
 	"github.com/PsychologicalExperiment/backEnd/util/plugins/log"
 	"github.com/gofrs/uuid"
 )
@@ -25,7 +26,10 @@ func (e *ExperimentDaoImpl) SaveExperiment(
 		return "", err
 	}
 	exps.ExperimentId = uid.String()
-	if err := tx.WithContext(ctx).Table(experimentInfoTableName).Debug().Save(exps).Error; err != nil {
+	if err := tx.WithContext(ctx).
+		Table(experimentInfoTableName).
+		Debug().
+		Save(exps).Error; err != nil {
 		log.Errorf("SaveExperiment error: %+v", err)
 		return "", err
 	}
@@ -45,6 +49,19 @@ func (e *ExperimentDaoImpl) SaveSubjectRecord(
 		return "", err
 	}
 	rcd.SubjectRecordId = uid.String()
+	// 不能重复参与实验
+	query := tx.WithContext(ctx).
+		Table(subjectRecordTableName).
+		Where("participant_id = ?", rcd.ParticipantId).
+		Find(&entity.SubjectRecordEntity{})
+	if query.Error != nil {
+		log.Errorf("Find subjectRecord error: %+v", err)
+		return "", err
+	}
+	if query.RowsAffected != 0 {
+		log.Errorf("participant: %d has participated in this experiment.")
+		return "", errorcode.New(errorcode.ErrInvalidResearcher)
+	}
 	if err := tx.WithContext(ctx).Table(subjectRecordTableName).Debug().Save(rcd).Error; err != nil {
 		log.Errorf("SaveSubjectRecord error: %+v", err)
 		return "", err
@@ -144,7 +161,7 @@ func (e *ExperimentDaoImpl) FindExperiments(
 		tx = tx.Offset(qry.Offset)
 	}
 	var res []*entity.ExperimentEntity
-	if err := tx.WithContext(ctx).Find(&res).Error; err != nil {
+	if err := tx.WithContext(ctx).Order("updated_at DESC").Find(&res).Error; err != nil {
 		log.Errorf("FindExperiments error: %+v", err)
 		return nil, 0, err
 	}
@@ -179,7 +196,8 @@ func (e *ExperimentDaoImpl) FindSubjectRecords(
 	if err != nil {
 		return nil, 0, err
 	}
-	tx = tx.WithContext(ctx).Table(subjectRecordTableName).Debug()
+	tx = tx.WithContext(ctx).Table(subjectRecordTableName).Debug().
+		Where("experiment_id = ?", qry.ExperimentId)
 	// TODO: 新增条件在这里加
 	var cnt int64
 	counter := tx
@@ -193,7 +211,7 @@ func (e *ExperimentDaoImpl) FindSubjectRecords(
 		tx = tx.Limit(qry.Limit).Offset(qry.Offset)
 	}
 	var res []*entity.SubjectRecordEntity
-	if err := tx.Find(&res).Error; err != nil {
+	if err := tx.Order("updated_at DESC").Find(&res).Error; err != nil {
 		log.Errorf("FindSubjectRecords error: %+v", err)
 		return nil, 0, err
 	}

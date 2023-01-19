@@ -19,10 +19,9 @@ func (u *UserInfoServerImpl) GetUserInfoBySearchKey(
 		user, err = u.getUserInfosByKey(searchKeyEmail, req.Email)
 	} else if req.PhoneNumber != "" {
 		user, err = u.getUserInfosByKey(searchKeyPhoneNumber, req.PhoneNumber)
-	} else if req.UserId ! = "" {
+	} else if req.UserId != 0 {
 		user, err = u.getUserInfosByKey(searchKeyUserId, req.UserId)
-	}
-	else {
+	} else {
 		return &userInfoPb.GetUserInfoBySearchKeyRsp{
 			CommonRsp: serverErr.CommonRsp(serverErr.New(serverErr.ErrUserInfoNotProvided)),
 		}, nil
@@ -40,8 +39,15 @@ func (u *UserInfoServerImpl) GetUserInfoBySearchKey(
 	// 验证成功
 	resp := &userInfoPb.GetUserInfoBySearchKeyRsp{
 		CommonRsp: serverErr.CommonRsp(serverErr.New(serverErr.OKCode)),
-		UserInfo: &userInfoPb.UserInfo{UserType: userInfoPb.UserType(user[0].UserType), Email: user[0].Email, PhoneNumber: user[0].PhoneNumber,
-			UserName: user[0].UserName, Gender: userInfoPb.GenderType(user[0].Gender), Extra: user[0].Extra},
+		UserInfo: &userInfoPb.UserInfo{
+			UserType:    userInfoPb.UserType(user[0].UserType),
+			Email:       user[0].Email,
+			PhoneNumber: user[0].PhoneNumber,
+			UserName:    user[0].UserName,
+			Gender:      userInfoPb.GenderType(user[0].Gender),
+			Extra:       user[0].Extra,
+			Uid:         int64(user[0].ID),
+		},
 	}
 
 	return resp, nil
