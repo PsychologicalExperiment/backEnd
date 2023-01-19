@@ -11,33 +11,32 @@ import (
 	_ "github.com/PsychologicalExperiment/backEnd/util/plugins/mon"
 	_ "github.com/PsychologicalExperiment/backEnd/util/plugins/naming"
 	_ "github.com/PsychologicalExperiment/backEnd/util/plugins/recovery"
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
-	grpcprometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
+	prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"google.golang.org/grpc"
 )
 
 func main() {
 	s := grpc.NewServer(
-		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
-			grpc_validator.StreamServerInterceptor(),
-			grpc_recovery.StreamServerInterceptor(),
-			grpcprometheus.StreamServerInterceptor,
+		grpc.StreamInterceptor(middleware.ChainStreamServer(
+			validator.StreamServerInterceptor(),
+			recovery.StreamServerInterceptor(),
+			prometheus.StreamServerInterceptor,
 		)),
-		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-			grpc_validator.UnaryServerInterceptor(),
-			grpc_recovery.UnaryServerInterceptor(),
-			grpcprometheus.UnaryServerInterceptor,
+		grpc.UnaryInterceptor(middleware.ChainUnaryServer(
+			validator.UnaryServerInterceptor(),
+			prometheus.UnaryServerInterceptor,
 		)),
 	)
 	conn, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", config.Config.Server.Port))
 	if err != nil {
 		log.Fatalf("tcp error: %+v", err)
 	}
-	impl := &impl.ExperimentServerImpl{}
-	pb.RegisterExperimentServiceServer(s, impl)
-	grpcprometheus.DefaultServerMetrics.InitializeMetrics(s)
+	expImpl := &impl.ExperimentServerImpl{}
+	pb.RegisterExperimentServiceServer(s, expImpl)
+	prometheus.DefaultServerMetrics.InitializeMetrics(s)
 	if err := s.Serve(conn); err != nil {
 		log.Fatalf("start server error %+v", err)
 	}

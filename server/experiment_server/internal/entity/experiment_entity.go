@@ -10,7 +10,7 @@ type ExperimentEntity struct {
 	gorm.Model
 	ExperimentId   string `gorm:"primaryKey;type:varchar(32);unique;no null"`
 	Title          string `gorm:"type:varchar(512);unique;no null"`
-	Description    string `gorm:"type:varcahr(4096);no null"`
+	Description    string `gorm:"type:varchar(4096);no null"`
 	ResearcherId   int64  `gorm:"column:researcher_id"`
 	ExperimentTime int32  `gorm:"no null"`
 	ParticipantNum int32  `gorm:"no null"`
