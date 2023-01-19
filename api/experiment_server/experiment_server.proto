@@ -212,4 +212,5 @@ message QuerySubjectRecordListResp {
     CommonRsp common_rsp = 1;
     int32 total_num = 2;
     repeated SubjectRecordInfo subject_record_list = 3;
+    float finish_pcts = 4;
 }
