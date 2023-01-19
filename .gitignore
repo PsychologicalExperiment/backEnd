@@ -10,9 +10,10 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
-
+*.tar.gz
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
 **/release/*
 **/bin/*
+**/dist/*

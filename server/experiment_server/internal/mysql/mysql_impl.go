@@ -62,7 +62,7 @@ func (e *ExperimentDaoImpl) UpdateExperiment(
 	}
 	if err := tx.Table(experimentInfoTableName).Debug().
 		Model(&entity.ExperimentEntity{}).
-		Where("researcher_id", exp.ResearcherId).
+		Where("researcher_id = ?", exp.ResearcherId).
 		Omit("created_at", "researcher_id").
 		Updates(exp).Error; err != nil {
 		log.Errorf("UpdateExperiment error: %+v", err)
@@ -82,9 +82,10 @@ func (e *ExperimentDaoImpl) UpdateSubjectRecord(
 	if err := tx.Table(subjectRecordTableName).
 		Debug().
 		Model(&entity.SubjectRecordEntity{}).
-		Where("participant_id", rcd.ParticipantId).
+		Where("participant_id = ?", rcd.ParticipantId).
+		Where("subject_record_id = ?", rcd.SubjectRecordId).
 		Omit("created_at", "researcher_id").
-		Update("state", rcd.State).Error; err != nil {
+		Updates(rcd).Error; err != nil {
 		log.Errorf("UpdateSubjectRecord error: %+v", err)
 		return err
 	}
@@ -162,7 +163,7 @@ func (e *ExperimentDaoImpl) FindSubjectRecord(
 	if err := tx.Table(subjectRecordTableName).
 		Debug().
 		Where("subject_record_id = ?", id).
-		Find(res).Error; err != nil {
+		Find(&res).Error; err != nil {
 		log.Errorf("FindSubjectRecord error: %+v", err)
 		return nil, err
 	}

@@ -19,7 +19,10 @@ func (u *UserInfoServerImpl) GetUserInfoBySearchKey(
 		user, err = u.getUserInfosByKey(searchKeyEmail, req.Email)
 	} else if req.PhoneNumber != "" {
 		user, err = u.getUserInfosByKey(searchKeyPhoneNumber, req.PhoneNumber)
-	} else {
+	} else if req.UserId ! = "" {
+		user, err = u.getUserInfosByKey(searchKeyUserId, req.UserId)
+	}
+	else {
 		return &userInfoPb.GetUserInfoBySearchKeyRsp{
 			CommonRsp: serverErr.CommonRsp(serverErr.New(serverErr.ErrUserInfoNotProvided)),
 		}, nil

@@ -2,6 +2,7 @@ package impl
 
 import (
 	"context"
+	"time"
 
 	pb "github.com/PsychologicalExperiment/backEnd/api/experiment_server"
 	"github.com/PsychologicalExperiment/backEnd/server/experiment_server/internal/entity"
@@ -200,6 +201,7 @@ func (s *ExperimentServerImpl) UpdateExperiment(
 		CurType:        req.CurType,
 		Price:          req.Price,
 		// CurType: req.CurType,
+		EndTime: time.Unix(req.EndTime, 0),
 	}
 	if err := dao.UpdateExperiment(ctx, e); err != nil {
 		return nil, err
@@ -270,8 +272,12 @@ func (s *ExperimentServerImpl) UpdateSubjectRecord(
 			}
 		}
 	}()
+	log.Infof("FinishTime: %+v", time.Unix(req.EndTime, 0))
 	rcd := &entity.SubjectRecordEntity{
-		State: int32(req.State),
+		State:           int32(req.State),
+		FinishTime:      time.Unix(req.EndTime, 0),
+		ParticipantId:   req.UserId,
+		SubjectRecordId: req.SubjectRecordId,
 		// TODO: 完成時間
 	}
 	dao := &mysql.ExperimentDaoImpl{}
@@ -396,6 +402,7 @@ func (s *ExperimentServerImpl) QuerySubjectRecordList(
 			TimeTaken:       v.FinishTime.Unix() - v.CreatedAt.Unix(),
 			State:           pb.SubjectRecordState(v.State),
 			UserInfo:        user,
+			CreateTime:      v.CreatedAt.Format("2006-01-02 15:04:05"),
 		}
 		rcds = append(rcds, t)
 	}

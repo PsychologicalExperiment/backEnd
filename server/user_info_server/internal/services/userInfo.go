@@ -17,6 +17,7 @@ import (
 const (
 	searchKeyEmail       string = "email"
 	searchKeyPhoneNumber string = "phone_number"
+	searchKeyUserId      string = "id"
 )
 
 type UserInfoServerImpl struct {
