@@ -25,7 +25,7 @@ func (e *ExperimentDaoImpl) SaveExperiment(
 		return "", err
 	}
 	exps.ExperimentId = uid.String()
-	if err := tx.Table(experimentInfoTableName).Debug().Save(exps).Error; err != nil {
+	if err := tx.WithContext(ctx).Table(experimentInfoTableName).Debug().Save(exps).Error; err != nil {
 		log.Errorf("SaveExperiment error: %+v", err)
 		return "", err
 	}
@@ -45,7 +45,7 @@ func (e *ExperimentDaoImpl) SaveSubjectRecord(
 		return "", err
 	}
 	rcd.SubjectRecordId = uid.String()
-	if err := tx.Table(subjectRecordTableName).Debug().Save(rcd).Error; err != nil {
+	if err := tx.WithContext(ctx).Table(subjectRecordTableName).Debug().Save(rcd).Error; err != nil {
 		log.Errorf("SaveSubjectRecord error: %+v", err)
 		return "", err
 	}
@@ -60,7 +60,7 @@ func (e *ExperimentDaoImpl) UpdateExperiment(
 	if err != nil {
 		return err
 	}
-	if err := tx.Table(experimentInfoTableName).Debug().
+	if err := tx.WithContext(ctx).Table(experimentInfoTableName).Debug().
 		Model(&entity.ExperimentEntity{}).
 		Where("researcher_id", exp.ResearcherId).
 		Omit("created_at", "researcher_id").
@@ -79,7 +79,7 @@ func (e *ExperimentDaoImpl) UpdateSubjectRecord(
 	if err != nil {
 		return err
 	}
-	if err := tx.Table(subjectRecordTableName).
+	if err := tx.WithContext(ctx).Table(subjectRecordTableName).
 		Debug().
 		Model(&entity.SubjectRecordEntity{}).
 		Where("participant_id", rcd.ParticipantId).
@@ -93,16 +93,16 @@ func (e *ExperimentDaoImpl) UpdateSubjectRecord(
 
 func (e *ExperimentDaoImpl) FindExperiment(
 	ctx context.Context,
-	exp_id string,
+	expId string,
 ) (*entity.ExperimentEntity, error) {
 	tx, err := SlaveClient()
 	if err != nil {
 		return nil, err
 	}
 	var res *entity.ExperimentEntity
-	if err := tx.Table(experimentInfoTableName).
+	if err := tx.WithContext(ctx).Table(experimentInfoTableName).
 		Debug().
-		Where("experiment_id = ?", exp_id).
+		Where("experiment_id = ?", expId).
 		Find(&res).Error; err != nil {
 		log.Errorf("FindExperiment error: %+v", err)
 		return nil, err
@@ -130,7 +130,7 @@ func (e *ExperimentDaoImpl) FindExperiments(
 	}
 	// TODO: 新增条件在这里加
 	var cnt int64
-	if err := tx.Count(&cnt).Error; err != nil {
+	if err := tx.WithContext(ctx).Count(&cnt).Error; err != nil {
 		log.Errorf("FindExperiments get count error: %+v", err)
 		return nil, 0, err
 	}
@@ -143,7 +143,7 @@ func (e *ExperimentDaoImpl) FindExperiments(
 		tx = tx.Offset(qry.Offset)
 	}
 	var res []*entity.ExperimentEntity
-	if err := tx.Find(&res).Error; err != nil {
+	if err := tx.WithContext(ctx).Find(&res).Error; err != nil {
 		log.Errorf("FindExperiments error: %+v", err)
 		return nil, 0, err
 	}
@@ -159,7 +159,7 @@ func (e *ExperimentDaoImpl) FindSubjectRecord(
 		return nil, err
 	}
 	var res *entity.SubjectRecordEntity
-	if err := tx.Table(subjectRecordTableName).
+	if err := tx.WithContext(ctx).Table(subjectRecordTableName).
 		Debug().
 		Where("subject_record_id = ?", id).
 		Find(res).Error; err != nil {
@@ -178,7 +178,7 @@ func (e *ExperimentDaoImpl) FindSubjectRecords(
 	if err != nil {
 		return nil, 0, err
 	}
-	tx = tx.Table(subjectRecordTableName).Debug()
+	tx = tx.WithContext(ctx).Table(subjectRecordTableName).Debug()
 	// TODO: 新增条件在这里加
 	var cnt int64
 	counter := tx
