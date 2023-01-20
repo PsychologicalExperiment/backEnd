@@ -102,6 +102,7 @@ message ExperimentInfo {
     int32 subject_records_num = 10; //  被试记录数
     int32 cur_type = 11;       //  币种代码
     int64 price = 12;               //  实验费用
+    string url = 13;                // 实验url
 }
 
 
@@ -114,6 +115,7 @@ message CreateExperimentReq {
     int32 participant_num = 6 [(validator.field) = {int_gt: 0}];
     int64 price = 7 [(validator.field) = {int_gt: 0}];
     int32 cur_type = 8;
+    string url = 9;
 }
 
 message CreateExperimentResp {

@@ -43,6 +43,7 @@ func (s *ExperimentServerImpl) CreateExperiment(
 		State:          int32(pb.ExperimentState_EXP_PUBLISHED),
 		Price:          req.Price,
 		CurType:        req.CurType,
+		Url:            req.Url,
 	}
 	log.Infof("e: %+v", e)
 
@@ -117,6 +118,7 @@ func (s *ExperimentServerImpl) QueryExperiment(
 			State:          pb.ExperimentState(res.State),
 			CreateTime:     res.CreatedAt.Format("2006-01-02 15:04:05"),
 			UpdateTime:     res.UpdatedAt.Format("2006-01-02 15:04:05"),
+			Url:            res.Url,
 		},
 	}
 	return resp, err
@@ -170,6 +172,7 @@ func (s *ExperimentServerImpl) QueryExperimentList(
 			UpdateTime:     v.UpdatedAt.Format("2006-01-02 15:04:05"),
 			Price:          v.Price,
 			CurType:        v.CurType,
+			Url:            v.Url,
 		}
 		exps = append(exps, t)
 	}

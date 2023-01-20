@@ -1,3 +1,4 @@
+
 APP=experiment_server
 build:
 	export GOPROXY=https://mirrors.aliyun.com/goproxy/
@@ -12,6 +13,9 @@ javis-remote:
 	scp -r config javis:/data/psychology/${APP}/config
 	scp restart.sh javis:/data/psychology/${APP}/
 	ssh javis "cd /data/psychology/${APP} && sh restart.sh &> /dev/null 2>&1 &"
+
+debug:
+	scp dist/${APP} Javis:/data/psychology/${APP}/${APP}
 
 javis:
 	sudo rm -rf /data/psychology/${APP}/${APP} &> /dev/null

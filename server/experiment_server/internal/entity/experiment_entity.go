@@ -18,4 +18,5 @@ type ExperimentEntity struct {
 	Price          int64  `gorm:"column:price"`
 	State          int32
 	EndTime        time.Time `gorm:"column:end_time"`
+	Url            string    `gorm:"column:url"`
 }
