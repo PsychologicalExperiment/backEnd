@@ -41,4 +41,7 @@ build:
 	cp -r config/ dist/
 	cp scripts/restart.sh dist/
 
+cicd:
+	rm -rf /data/psychology/${APP}/${APP} && cp -r dist/* /data/psychology/${APP}/ && cd /data/psychology/${APP} && sh restart.sh &> /dev/null 2>&1 &
+
 .PHONY: all build clean
