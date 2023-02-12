@@ -59,7 +59,7 @@ type userInfo struct {
 func (u *UserInfoServerImpl) insertUserInfo(
 	user *userInfo,
 ) error {
-	res := u.writeConn.Debug().Create(user)
+	res := u.writeConn.Table("user_info").Debug().Create(user)
 	if res.Error != nil {
 		grpclog.Errorf("insert into db failed, error: %+v, userInfo: %+v", res.Error, user)
 		return serverErr.New(serverErr.ErrMySqlError)
@@ -71,7 +71,7 @@ func (u *UserInfoServerImpl) isUinqueKeyUsed(
 	uniqueKey, queryKey string,
 ) (bool, error) {
 	users := []userInfo{}
-	res := u.readConn.Where(fmt.Sprintf("%s = ?", queryKey), uniqueKey).Find(&users)
+	res := u.readConn.Table("user_info").Where(fmt.Sprintf("%s = ?", queryKey), uniqueKey).Find(&users)
 	if res.Error != nil {
 		grpclog.Errorf("read db failed, error: %+v", res.Error)
 		return false, serverErr.New(serverErr.ErrMySqlError)
