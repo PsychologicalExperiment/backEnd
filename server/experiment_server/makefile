@@ -5,7 +5,7 @@ build:
 	go mod tidy
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o dist/${APP} main.go
 	cp -r config/ dist/
-	cp scripts/restart.sh dist/
+	cp scripts/* dist/
 
 javis-remote:
 	ssh javis "sudo rm -rf /data/psychology/${APP}/${APP} &> /dev/null"
@@ -16,6 +16,9 @@ javis-remote:
 
 debug:
 	scp dist/${APP} Javis:/data/psychology/${APP}/${APP}
+
+cicd:
+	rm -rf /data/psychology/${APP}/${APP}  && cp -r dist/* /data/psychology/${APP}/ && cd /data/psychology/${APP} && sh start.sh &> /dev/null 2>&1 &
 
 javis:
 	sudo rm -rf /data/psychology/${APP}/${APP} &> /dev/null
