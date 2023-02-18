@@ -145,12 +145,14 @@ message UpdateExperimentResp {
 message QueryExperimentReq {
     string request_id = 1;
     string experiment_id = 2; // 实验id
+    int64 researcher_id = 3 [(validator.field) = {int_gt: 0}];
 }
 
 message QueryExperimentResp {
     CommonRsp common_rsp = 1;
     ExperimentInfo exp_info = 2;
     repeated SubjectRecordInfo subject_records = 3;
+    int32 subscribe = 4; //  1 - 订阅 2 - 未订阅
 }
 
 message QueryExperimentListReq {

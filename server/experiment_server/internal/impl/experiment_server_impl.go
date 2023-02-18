@@ -103,6 +103,12 @@ func (s *ExperimentServerImpl) QueryExperiment(
 	if err != nil {
 		return nil, err
 	}
+	// 查询是否订阅了这个实验
+	subscribe, err := dao.CheckSubscribe(ctx, req.ExperimentId, req.ResearcherId)
+	if err != nil {
+		return nil, err
+	}
+
 	resp = &pb.QueryExperimentResp{
 		CommonRsp: &pb.CommonRsp{
 			Code: errorcode.OKCode,
@@ -120,6 +126,7 @@ func (s *ExperimentServerImpl) QueryExperiment(
 			UpdateTime:     res.UpdatedAt.Format("2006-01-02 15:04:05"),
 			Url:            res.Url,
 		},
+		Subscribe: subscribe,
 	}
 	return resp, err
 }

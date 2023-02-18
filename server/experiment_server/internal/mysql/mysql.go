@@ -60,6 +60,8 @@ type ExperimentDao interface {
 
 	FindSubjectRecord(context.Context, string) (*entity.SubjectRecordEntity, error)
 	FindSubjectRecords(context.Context, QuerySubjectRecordReq) ([]*entity.SubjectRecordEntity, int32, error)
+
+	CheckSubscribe(context.Context, string, int64) (int32, error)
 }
 
 // QueryExperimentReq 查询条件

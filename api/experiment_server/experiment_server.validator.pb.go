@@ -80,6 +80,9 @@ func (this *UpdateExperimentResp) Validate() error {
 	return nil
 }
 func (this *QueryExperimentReq) Validate() error {
+	if !(this.ResearcherId > 0) {
+		return github_com_mwitkow_go_proto_validators.FieldError("ResearcherId", fmt.Errorf(`value '%v' must be greater than '0'`, this.ResearcherId))
+	}
 	return nil
 }
 func (this *QueryExperimentResp) Validate() error {

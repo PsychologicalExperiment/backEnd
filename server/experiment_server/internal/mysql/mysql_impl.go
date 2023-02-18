@@ -217,3 +217,26 @@ func (e *ExperimentDaoImpl) FindSubjectRecords(
 	}
 	return res, cnt, nil
 }
+
+func (e *ExperimentDaoImpl) CheckSubscribe(
+	ctx context.Context,
+	experimentId string,
+	userId int64,
+) (int32, error) {
+	var flag int32 = 2
+	tx, err := SlaveClient()
+	if err != nil {
+		return flag, nil
+	}
+	res := tx.WithContext(ctx).Table(subjectRecordTableName).
+		Debug().
+		Where("experiment_id = ?", experimentId).
+		Where("participant_id = ?", userId)
+	if res.Error != nil {
+		return flag, res.Error
+	}
+	if res.RowsAffected > 0 {
+		flag = 1
+	}
+	return flag, nil
+}
